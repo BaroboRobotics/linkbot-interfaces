@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.5)
 project(linkbot-interfaces VERSION 0.1.0)
 
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost 1.54.0 REQUIRED system)
 find_package(ribbon-bridge 0.3.0 REQUIRED)
 
-nanopb_add_proto(commontypes-proto commontypes.proto)
+nanopb_add_proto(commontypes-proto commontypes.proto src/system_error.cpp)
 
 nanopb_add_proto(robot-interface robot.proto gen-robot.pb.cpp)
 nanopb_add_proto(dongle-interface dongle.proto gen-dongle.pb.cpp)
 nanopb_add_proto(daemon-interface daemon.proto gen-daemon.pb.cpp)
 
-set_target_properties(robot-interface dongle-interface daemon-interface
+set_target_properties(commontypes-proto robot-interface dongle-interface daemon-interface
     PROPERTIES CXX_STANDARD 11
                CXX_STANDARD_REQUIRED ON
 			   )
@@ -21,7 +23,8 @@ if(MSVC)
 	message(WARNING "Disabling PB_STATIC_ASSERT for robot-interface due to Visual C++ token length limit")
 endif()
 
-target_link_libraries(commontypes-proto barobo::rpc-proto)
+target_link_libraries(commontypes-proto barobo::rpc-proto Boost::system)
+target_include_directories(commontypes-proto PRIVATE include)
 
 target_link_libraries(robot-interface commontypes-proto barobo::rpc)
 target_link_libraries(dongle-interface commontypes-proto barobo::rpc)
@@ -37,10 +40,13 @@ install(TARGETS commontypes-proto robot-interface dongle-interface daemon-interf
 
 install(FILES
     gen-robot.pb.hpp gen-dongle.pb.hpp gen-daemon.pb.hpp
+    ${PROJECT_BINARY_DIR}/commontypes.pb.h
     ${PROJECT_BINARY_DIR}/robot.pb.h
     ${PROJECT_BINARY_DIR}/dongle.pb.h
     ${PROJECT_BINARY_DIR}/daemon.pb.h
     DESTINATION include)
+
+install(DIRECTORY include/ DESTINATION include)
 
 # Boilerplate follows
 

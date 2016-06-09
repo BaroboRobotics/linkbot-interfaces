@@ -1,7 +1,7 @@
 #ifndef BAROMESH_STATUS_HPP
 #define BAROMESH_STATUS_HPP
 
-#include "daemon.pb.h"
+#include "commontypes.pb.h"
 
 namespace baromesh {
 
