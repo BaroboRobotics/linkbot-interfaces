@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.2.1)
-project(baromesh-interfaces)
+cmake_minimum_required(VERSION 3.5)
+project(linkbot-interfaces VERSION 0.1.0)
+
+find_package(ribbon-bridge 0.3.0 REQUIRED)
 
 nanopb_add_proto(commontypes-proto commontypes.proto)
 
@@ -19,8 +21,52 @@ if(MSVC)
 	message(WARNING "Disabling PB_STATIC_ASSERT for robot-interface due to Visual C++ token length limit")
 endif()
 
-target_link_libraries(commontypes-proto rpc-proto)
+target_link_libraries(commontypes-proto barobo::rpc-proto)
 
-target_link_libraries(robot-interface commontypes-proto rpc)
-target_link_libraries(dongle-interface commontypes-proto rpc)
-target_link_libraries(daemon-interface commontypes-proto rpc)
+target_link_libraries(robot-interface commontypes-proto barobo::rpc)
+target_link_libraries(dongle-interface commontypes-proto barobo::rpc)
+target_link_libraries(daemon-interface commontypes-proto barobo::rpc)
+
+
+install(TARGETS commontypes-proto robot-interface dongle-interface daemon-interface EXPORT barobo
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
+install(FILES
+    gen-robot.pb.hpp gen-dongle.pb.hpp gen-daemon.pb.hpp
+    ${PROJECT_BINARY_DIR}/robot.pb.h
+    ${PROJECT_BINARY_DIR}/dongle.pb.h
+    ${PROJECT_BINARY_DIR}/daemon.pb.h
+    DESTINATION include)
+
+# Boilerplate follows
+
+export(EXPORT barobo
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-targets.cmake"
+    NAMESPACE barobo::
+)
+
+install(EXPORT barobo
+    FILE ${PROJECT_NAME}-targets.cmake
+    NAMESPACE barobo::
+    DESTINATION cmake
+)
+
+file(WRITE "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+    "include(\"\${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}-targets.cmake\")"
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-configVersion.cmake"
+    COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-configVersion.cmake"
+    DESTINATION cmake
+)
