@@ -1,11 +1,16 @@
 cmake_minimum_required(VERSION 3.5)
-project(linkbot-interfaces VERSION 0.1.0)
+project(linkbot-interfaces VERSION 0.1.0 LANGUAGES C CXX)
 
 set(Boost_USE_STATIC_LIBS ON)
 find_package(Boost 1.54.0 REQUIRED system)
 find_package(ribbon-bridge 0.3.0 REQUIRED)
 
-nanopb_add_proto(commontypes-proto commontypes.proto src/system_error.cpp)
+set(commontypesSources commontypes.proto)
+if(NOT CMAKE_SYSTEM_NAME MATCHES "AVR")
+    list(APPEND commontypesSources src/system_error.cpp)
+endif()
+
+nanopb_add_proto(commontypes-proto ${commontypesSources})
 
 nanopb_add_proto(robot-interface robot.proto gen-robot.pb.cpp)
 nanopb_add_proto(dongle-interface dongle.proto gen-dongle.pb.cpp)
@@ -14,6 +19,7 @@ nanopb_add_proto(daemon-interface daemon.proto gen-daemon.pb.cpp)
 set_target_properties(commontypes-proto robot-interface dongle-interface daemon-interface
     PROPERTIES CXX_STANDARD 11
                CXX_STANDARD_REQUIRED ON
+               CXX_EXTENSIONS OFF  # c++11, not gnu++11
 			   )
 
 if(MSVC)
@@ -23,7 +29,10 @@ if(MSVC)
 	message(WARNING "Disabling PB_STATIC_ASSERT for robot-interface due to Visual C++ token length limit")
 endif()
 
-target_link_libraries(commontypes-proto barobo::rpc-proto Boost::system)
+target_link_libraries(commontypes-proto PUBLIC barobo::rpc-proto)
+if(NOT CMAKE_SYSTEM_NAME MATCHES "AVR")
+    target_link_libraries(commontypes-proto PUBLIC Boost::system)
+endif()
 target_include_directories(commontypes-proto PRIVATE include)
 
 target_link_libraries(robot-interface commontypes-proto barobo::rpc)
