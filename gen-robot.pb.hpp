@@ -48,6 +48,7 @@ RPCDEF_HPP(
         (writeTwi)
         (readTwi)
         (writeReadTwi)
+        (reboot)
         ,
         // all broadcasts
         (buttonEvent)

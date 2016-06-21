@@ -43,6 +43,7 @@ RPCDEF_CPP((barobo, Robot),
         (writeTwi)
         (readTwi)
         (writeReadTwi)
+        (reboot)
         ,
         // all broadcasts
         (buttonEvent)

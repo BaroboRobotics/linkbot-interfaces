@@ -424,6 +424,11 @@ message writeReadTwi {
     }
 }
 
+message reboot {
+    message In {}
+    message Result {}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // Broadcasts
 
