@@ -5,6 +5,7 @@ RPCDEF_CPP((barobo, Dongle),
 		(getFirmwareVersion)
 		(reboot)
         (setRadioMode)
+        (setComputerId)
         (transmitUnicast)
         (transmitRadioBroadcast)
         ,

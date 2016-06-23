@@ -32,6 +32,14 @@ message setRadioMode {
     message Result {}
 }
 
+message setComputerId {
+    message In {
+        required uint32 computerId = 1;
+    }
+
+    message Result {}
+}
+
 message transmitUnicast {
     message In {
         required barobo.SerialId serialId = 1;
