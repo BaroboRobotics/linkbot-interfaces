@@ -1,12 +1,20 @@
 cmake_minimum_required(VERSION 3.5)
 project(linkbot-interfaces VERSION 0.1.0 LANGUAGES C CXX)
 
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.54.0 REQUIRED system)
+set(AVR OFF)
+if(CMAKE_SYSTEM_NAME MATCHES "AVR")
+    set(AVR ON)
+    message(STATUS "Configuring for AVR")
+endif()
+
+if(NOT AVR)
+    set(Boost_USE_STATIC_LIBS ON)
+    find_package(Boost 1.54.0 REQUIRED system)
+endif()
 find_package(ribbon-bridge 0.3.0 REQUIRED)
 
 set(commontypesSources commontypes.proto)
-if(NOT CMAKE_SYSTEM_NAME MATCHES "AVR")
+if(NOT AVR)
     list(APPEND commontypesSources src/system_error.cpp)
 endif()
 
@@ -30,7 +38,7 @@ if(MSVC)
 endif()
 
 target_link_libraries(commontypes-proto PUBLIC barobo::rpc-proto)
-if(NOT CMAKE_SYSTEM_NAME MATCHES "AVR")
+if(NOT AVR)
     target_link_libraries(commontypes-proto PUBLIC Boost::system)
 endif()
 target_include_directories(commontypes-proto PRIVATE include)
