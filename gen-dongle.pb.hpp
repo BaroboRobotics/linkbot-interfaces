@@ -10,6 +10,8 @@ RPCDEF_HPP(
         // all methods
         (getFirmwareVersion)
         (reboot)
+        (setRadioMode)
+        (setComputerId)
         (transmitUnicast)
         (transmitRadioBroadcast)
         ,

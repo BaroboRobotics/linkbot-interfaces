@@ -19,6 +19,27 @@ message reboot {
     message Result {}
 }
 
+message setRadioMode {
+    enum Mode {
+        FULL_DUPLEX = 0;
+        TRANSMIT = 1;
+        RECEIVE = 2;
+    }
+    message In {
+        required Mode mode = 1;
+    }
+
+    message Result {}
+}
+
+message setComputerId {
+    message In {
+        required uint32 computerId = 1;
+    }
+
+    message Result {}
+}
+
 message transmitUnicast {
     message In {
         required barobo.SerialId serialId = 1;
