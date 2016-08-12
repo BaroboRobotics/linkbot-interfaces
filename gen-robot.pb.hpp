@@ -40,6 +40,7 @@ RPCDEF_HPP(
         (getJointStates)
         (getButtonState)
         (getFirmwareVersion)
+        (getFirmwareVersionString)
         (move)
         (resetEncoderRevs)
         (stop)

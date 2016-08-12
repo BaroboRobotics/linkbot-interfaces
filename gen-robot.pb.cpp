@@ -35,6 +35,7 @@ RPCDEF_CPP((barobo, Robot),
         (getJointStates)
         (getButtonState)
         (getFirmwareVersion)
+        (getFirmwareVersionString)
         (move)
         (resetEncoderRevs)
         (stop)

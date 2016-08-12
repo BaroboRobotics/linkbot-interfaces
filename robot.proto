@@ -367,12 +367,20 @@ message getButtonState {
     }
 }
 
+// deprecated
 message getFirmwareVersion {
     message In {}
     message Result {
         required uint32 major = 1;
         required uint32 minor = 2;
         required uint32 patch = 3;
+    }
+}
+
+message getFirmwareVersionString {
+    message In {}
+    message Result {
+        required string value = 1 [(nanopb).max_size = 128];
     }
 }
 
