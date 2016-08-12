@@ -3,7 +3,7 @@
 
 RPCDEF_CPP((barobo, Dongle),
 		(getFirmwareVersion)
-		(getVersionString)
+		(getFirmwareVersionString)
 		(reboot)
         (setRadioMode)
         (setComputerId)

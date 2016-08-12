@@ -15,7 +15,7 @@ message getFirmwareVersion {
     }
 }
 
-message getVersionString {
+message getFirmwareVersionString {
     message In {}
     message Result {
         required string value = 1 [(nanopb).max_size = 128];
