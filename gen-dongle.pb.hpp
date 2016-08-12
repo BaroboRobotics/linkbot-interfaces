@@ -9,6 +9,7 @@ RPCDEF_HPP(
         (barobo, Dongle), (0, 1, 2),
         // all methods
         (getFirmwareVersion)
+        (getVersionString)
         (reboot)
         (setRadioMode)
         (setComputerId)
