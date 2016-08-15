@@ -474,6 +474,7 @@ message jointEvent {
     required uint32 timestamp = 1;
     required uint32 joint = 2;
     required JointState event = 3;
+    optional float angle = 4;
 }
 
 message debugMessageEvent {
