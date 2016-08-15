@@ -8,6 +8,7 @@ RPCDEF_HPP(
         // the interface we're defining and it's version triplet
         (barobo, Daemon), (0, 1, 1),
         // all methods
+        (getDaemonVersionString)
         (resolveSerialId)
         (cycleDongle)
         (sendRobotPing)
