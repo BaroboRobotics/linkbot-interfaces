@@ -6,10 +6,17 @@ package barobo.Daemon;
 
 message TcpEndpoint {
     required string address = 1 [(nanopb).max_size = 64];
-    required uint32 port = 2;    
+    required uint32 port = 2;
 }
 
 // Methods
+
+message getDaemonVersionString {
+    message In {}
+    message Result {
+        required string value = 1 [(nanopb).max_size = 128];
+    }
+}
 
 message resolveSerialId {
     message In {
