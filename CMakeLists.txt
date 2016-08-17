@@ -25,10 +25,11 @@ nanopb_add_proto(dongle-interface dongle.proto gen-dongle.pb.cpp)
 nanopb_add_proto(daemon-interface daemon.proto gen-daemon.pb.cpp)
 
 set_target_properties(commontypes-proto robot-interface dongle-interface daemon-interface
-    PROPERTIES CXX_STANDARD 11
-               CXX_STANDARD_REQUIRED ON
-               CXX_EXTENSIONS OFF  # c++11, not gnu++11
-			   )
+    PROPERTIES
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF  # c++11, not gnu++11
+)
 
 if(MSVC)
 	# Without this, the PB_STATIC_ASSERT line generated in robot.pb.c will
