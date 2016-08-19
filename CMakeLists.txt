@@ -29,6 +29,7 @@ set_target_properties(commontypes-proto robot-interface dongle-interface daemon-
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS OFF  # c++11, not gnu++11
+        POSITION_INDEPENDENT_CODE ON
 )
 
 if(MSVC)
