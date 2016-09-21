@@ -40,6 +40,7 @@ message cycleDongle {
 message sendRobotPing {
     message In {
         repeated SerialId destinations = 1 [(nanopb).max_count = 8];
+        optional uint32 peripheralResetMask = 2;
     }
     message Result {
         required Status status = 1;

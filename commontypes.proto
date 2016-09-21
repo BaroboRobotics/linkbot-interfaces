@@ -36,6 +36,14 @@ enum RadioPort {
     ROBOT_BUMPCONNECT = 4;
 }
 
+enum Peripheral {
+    MOTOR1 = 0;
+    MOTOR2 = 1;
+    MOTOR3 = 2;
+    LED = 3;
+    BUZZER = 4;
+}
+
 // Radio broadcast from the daemon to multiple robots.
 message RobotPing {
     repeated SerialId destinations = 1 [(nanopb).max_count = 8];
@@ -43,6 +51,9 @@ message RobotPing {
     // for (auto i = 0; i < self.destinations_count; ++i) {
     //     // self.destinations[i] is a null-terminated char[5]
     // }
+
+    optional uint32 peripheralResetMask = 2;
+    // Define by `mask |= (1 << barobo_Peripheral_MOTOR1)`, etc.
 }
 
 // Radio broadcast from a robot to all daemons.
