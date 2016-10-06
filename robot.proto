@@ -172,6 +172,26 @@ message setMotorControllerDerivativeGain {
     }
 }
 
+// A peripheral reset mask instructs the robot to reset certain peripherals (defined in enum
+// Peripheral in commontypes.proto) when the client disconnects. This allows programs to define
+// what action the robot should take upon disconnect: e.g., continue buzzing/moving motors, or fall
+// silent.
+message setPeripheralResetMask {
+    message In {
+        required uint32 mask = 1;
+    }
+    message Result {
+    }
+}
+
+message getPeripheralResetMask {
+    message In {
+    }
+    message Result {
+        required uint32 mask = 1;
+    }
+}
+
 message getBatteryVoltage {
     message In {
     }
