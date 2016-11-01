@@ -81,6 +81,7 @@ enum BumpConnectMessageType {
     POSE_REACHED = 9;
     PLAY_POSES = 10;
     CLEAR_POSES = 11;
+    SET_LED_COLOR = 12;
 }
 
 message BumpConnectMessage {
@@ -119,4 +120,8 @@ message BumpConnect_RecordPose {
 
 message BumpConnect_GoToPose {
     required uint32 index = 1;
+}
+
+message BumpConnect_LedColor {
+    required uint32 color = 1;
 }
