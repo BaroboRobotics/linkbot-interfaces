@@ -73,6 +73,11 @@ install(FILES
     ${PROJECT_BINARY_DIR}/robot.pb.h
     ${PROJECT_BINARY_DIR}/dongle.pb.h
     ${PROJECT_BINARY_DIR}/daemon.pb.h
+    ${PROJECT_BINARY_DIR}/commontypes.pb.hpp
+    ${PROJECT_BINARY_DIR}/linkbot.pb.hpp
+    ${PROJECT_BINARY_DIR}/robot.pb.hpp
+    ${PROJECT_BINARY_DIR}/dongle.pb.hpp
+    ${PROJECT_BINARY_DIR}/daemon.pb.hpp
     DESTINATION include)
 
 install(DIRECTORY include/ DESTINATION include)

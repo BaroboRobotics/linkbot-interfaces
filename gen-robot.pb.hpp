@@ -2,7 +2,7 @@
 #define barobo_Robot_INTERFACE
 
 #include "rpc/def.hpp"
-#include "robot.pb.h"
+#include "robot.pb.hpp"
 
 RPCDEF_HPP(
         // the interface we're defining and it's version triplet

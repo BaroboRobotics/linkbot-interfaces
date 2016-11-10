@@ -2,7 +2,7 @@
 #define barobo_Daemon_INTERFACE
 
 #include "rpc/def.hpp"
-#include "daemon.pb.h"
+#include "daemon.pb.hpp"
 
 RPCDEF_HPP(
         // the interface we're defining and it's version triplet

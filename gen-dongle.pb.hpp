@@ -2,7 +2,7 @@
 #define barobo_Dongle_INTERFACE
 
 #include "rpc/def.hpp"
-#include "dongle.pb.h"
+#include "dongle.pb.hpp"
 
 RPCDEF_HPP(
         // the interface we're defining and it's version triplet
