@@ -41,9 +41,9 @@ message setRadioMode {
     message Result {}
 }
 
-message setComputerId {
+message setSessionId {
     message In {
-        required uint32 computerId = 1;
+        required uint32 sessionId = 1;
     }
 
     message Result {}
