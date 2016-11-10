@@ -49,12 +49,13 @@ message setSessionId {
     message Result {}
 }
 
+// TODO: unify transmitUnicast and transmitBroadcast
+
 message transmitUnicast {
     message In {
         required barobo.SerialId serialId = 1;
-        required uint32 destinationPort = 2;
-        required uint32 sourcePort = 3;
-        required barobo.SessionMessage sessionMessage = 4;
+        required uint32 sessionId = 2;
+        required linkbot.DaemonToRobotMessage toRobot = 4;
     }
     message Result {
         required barobo.Status status = 1;
@@ -64,9 +65,8 @@ message transmitUnicast {
 
 message transmitRadioBroadcast {
     message In {
-        required uint32 destinationPort = 1;
-        required uint32 sourcePort = 2;
-        required barobo.SessionMessage sessionMessage = 3;
+        required uint32 sessionId = 1;
+        required linkbot.DaemonToRobotMessage toRobot = 3;
     }
     message Result {
         required barobo.Status status = 1;
@@ -79,7 +79,6 @@ message transmitRadioBroadcast {
 
 message receiveTransmission {
     required barobo.SerialId serialId = 1;
-    required uint32 destinationPort = 2;
-    required uint32 sourcePort = 3;
-    required barobo.SessionMessage sessionMessage = 4;
+    optional uint32 sessionId = 2;
+    required linkbot.RobotToDaemonMessage toDaemon = 4;
 }
