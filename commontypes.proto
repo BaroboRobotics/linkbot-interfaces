@@ -34,6 +34,10 @@ enum RadioPort {
     ROBOT_PING = 2;
     ROBOT_EVENT = 3;
     ROBOT_BUMPCONNECT = 4;
+    // All of the above are deprecated.
+
+    LINKBOT_RADIO_PROTOCOL = 5;
+    // linkbot.RadioMessage from linkbot.proto
 }
 
 enum Peripheral {
