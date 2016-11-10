@@ -19,6 +19,7 @@ if(NOT AVR)
 endif()
 
 nanopb_add_proto(commontypes-proto ${commontypesSources})
+nanopb_add_proto(linkbot-proto linkbot.proto)
 
 nanopb_add_proto(robot-interface robot.proto gen-robot.pb.cpp)
 nanopb_add_proto(dongle-interface dongle.proto gen-dongle.pb.cpp)
@@ -45,12 +46,20 @@ if(NOT AVR)
 endif()
 target_include_directories(commontypes-proto PRIVATE include)
 
+target_link_libraries(linkbot-proto PUBLIC barobo::rpc-proto)
+
 target_link_libraries(robot-interface commontypes-proto barobo::rpc)
-target_link_libraries(dongle-interface commontypes-proto barobo::rpc)
+target_link_libraries(dongle-interface commontypes-proto barobo::rpc linkbot-proto)
 target_link_libraries(daemon-interface commontypes-proto barobo::rpc)
 
-
-install(TARGETS commontypes-proto robot-interface dongle-interface daemon-interface EXPORT barobo
+install(
+    TARGETS
+        commontypes-proto
+        linkbot-proto
+        robot-interface
+        dongle-interface
+        daemon-interface
+    EXPORT barobo
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
@@ -60,6 +69,7 @@ install(TARGETS commontypes-proto robot-interface dongle-interface daemon-interf
 install(FILES
     gen-robot.pb.hpp gen-dongle.pb.hpp gen-daemon.pb.hpp
     ${PROJECT_BINARY_DIR}/commontypes.pb.h
+    ${PROJECT_BINARY_DIR}/linkbot.pb.h
     ${PROJECT_BINARY_DIR}/robot.pb.h
     ${PROJECT_BINARY_DIR}/dongle.pb.h
     ${PROJECT_BINARY_DIR}/daemon.pb.h

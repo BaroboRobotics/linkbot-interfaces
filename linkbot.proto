@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+import "rpc.proto";
+import "commontypes.proto";
+package linkbot;
+
+message DaemonToRobotMessage {
+    oneof arg {
+        barobo.RobotPing ping = 1;
+        barobo.rpc.ClientMessage request = 2;
+    }
+}
+
+message RobotToDaemonMessage {
+    oneof arg {
+        barobo.RobotEvent event = 1;
+        barobo.rpc.ServerMessage response = 2;
+    }
+}
+
+message SessionMessage {
+    optional uint32 id = 1;
+    // The dongle uses the session ID as its radio address, but we still need to send it over the
+    // radio in order to use Linkbots themselves as dongles.
+
+    oneof arg {
+        DaemonToRobotMessage toRobot = 2;
+        RobotToDaemonMessage toDaemon = 3;
+    }
+}
+
+message RadioMessage {
+    // This message is the root of all radio messages sent to or from Linkbots. 
+
+    oneof arg {
+        SessionMessage session = 1;
+        barobo.BumpConnectMessage bumpConnect = 2;
+    }
+}
+
+// RadioMessage{destinations=[ABCD, EFGH]}
+// RadioMessage{session=...},
+// RadioMessage{destinations=[]}

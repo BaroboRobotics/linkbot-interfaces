@@ -1,5 +1,6 @@
 import "nanopb.proto";
 import "commontypes.proto";
+import "linkbot.proto";
 package barobo.Dongle;
 
 //////////////////////////////////////////////////////////////////////////////
