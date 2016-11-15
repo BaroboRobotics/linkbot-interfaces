@@ -52,7 +52,7 @@ message AddRobotRefs {
     // Add references to a robot in the daemon's robot list. If the ref count for a robot is now 1,
     // the daemon makes a connection to the robot.
     message In {
-        repeated SerialId serialIds = 1;
+        repeated SerialId serialIds = 1 [(nanopb).max_count = 512];
     }
     message Out {
         optional Status status = 1;
@@ -63,7 +63,7 @@ message ReleaseRobotRefs {
     // Release references to a robot in the daemon's robot list. If the ref count for a robot is now
     // 0, the daemon disconnects from the robot.
     message In {
-        repeated SerialId serialIds = 1;
+        repeated SerialId serialIds = 1 [(nanopb).max_count = 512];
     }
     message Out {
         optional Status status = 1;
@@ -89,14 +89,14 @@ message Transmit {
         // If present, determines the behavior of an empty destinations list. If not present, assume
         // defaults to BroadcastMethod.BROADCAST.
 
-        repeated SerialId destinations = 2;
+        repeated SerialId destinations = 2 [(nanopb).max_count = 512];
         // If `destinations` contains a single serial ID, the message is unicast transmitted and
         // `broadcastMethod` is ignored.
         // If `destinations` contains multiple serial IDs, the message is multicast transmitted to
         // the listed serial IDs and `broadcastMethod` is ignored.
         // If `destinations` is empty, the true destinations are determined by `broadcastMethod`.
 
-        repeated robot.ClientToRobot payload = 4;
+        optional robot.ClientToRobot payload = 4;
     }
     message Out {
         optional Status status = 1;

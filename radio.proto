@@ -23,7 +23,7 @@ message RadioMessage {
 message RoutedRadioMessage {
     // This message is the root of all radio messages sent to or from Linkbots.
 
-    repeated SerialId destinations = 1 [(nanopb).max_size = 8];
+    repeated SerialId destinations = 1 [(nanopb).max_count = 8];
     // List of Linkbot serial IDs / Z-Link radio addresses.
     // If empty, this message is either a broadcast or a unicast message, and the recipient should
     // interpret it as addressed to them. If non-empty, this message is a multicast message, and the
@@ -33,6 +33,6 @@ message RoutedRadioMessage {
     // The dongle uses the session ID as its radio address, but we still need to send it over the
     // radio in order to use Linkbots themselves as dongles.
 
-    repeated RadioMessage payload = 3;
+    optional RadioMessage payload = 3;
     // The actual guts of the message.
 }
