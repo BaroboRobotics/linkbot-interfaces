@@ -1,3 +1,5 @@
+// This file defines messages transmitted over Linkbot radios.
+
 syntax = "proto2";
 
 import "nanopb.proto";
@@ -5,7 +7,7 @@ import "robot.proto";
 import "bumpconnect.proto";
 import "commontypes.proto";
 
-package linkbot;
+package linkbot.radio;
 
 // =============================================================================
 // Radio messages
@@ -20,7 +22,7 @@ message RadioMessage {
 
 message RoutedRadioMessage {
     // This message is the root of all radio messages sent to or from Linkbots.
- 
+
     repeated SerialId destinations = 1 [(nanopb).max_size = 8];
     // List of Linkbot serial IDs / Z-Link radio addresses.
     // If empty, this message is either a broadcast or a unicast message, and the recipient should
