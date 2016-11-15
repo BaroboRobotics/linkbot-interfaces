@@ -1,84 +1,111 @@
+// This file defines control messages transmitted between the Linkbot daemon (linkbotd) and Linkbot
+// dongles (e.g., Z-Links or Linkbot robots themselves).
+
+syntax = "proto2";
+
 import "nanopb.proto";
-import "commontypes.proto";
-import "linkbot.proto";
-package barobo.Dongle;
+import "radio.proto";
 
-//////////////////////////////////////////////////////////////////////////////
-// Methods
+package linkbot.dongle;
 
-// deprecated
-message getFirmwareVersion {
+// =============================================================================
+// Dongle RPC messages
+
+message GetFirmwareVersionString {
     message In {}
-    message Result {
-        required uint32 major = 1;
-        required uint32 minor = 2;
-        required uint32 patch = 3;
+    message Out {
+        optional string value = 1 [(nanopb).max_size = 128];
     }
 }
 
-message getFirmwareVersionString {
+message Reboot {
     message In {}
-    message Result {
-        required string value = 1 [(nanopb).max_size = 128];
-    }
+    message Out {}
 }
 
-message reboot {
-    message In {}
-    message Result {}
+enum RadioMode {
+    FULL_DUPLEX = 0;
+    TRANSMIT = 1;
+    RECEIVE = 2;
+    // TODO: promiscuous sniffer mode?
 }
 
-message setRadioMode {
-    enum Mode {
-        FULL_DUPLEX = 0;
-        TRANSMIT = 1;
-        RECEIVE = 2;
-    }
+message SetRadioMode {
     message In {
-        required Mode mode = 1;
+        optional RadioMode mode = 1;
     }
-
-    message Result {}
+    message Out {}
 }
 
-message setSessionId {
+message SetSessionId {
     message In {
-        required uint32 sessionId = 1;
+        optional uint32 sessionId = 1;
     }
-
-    message Result {}
+    message Out {}
 }
 
-// TODO: unify transmitUnicast and transmitBroadcast
-
-message transmitUnicast {
+message Transmit {
     message In {
-        required barobo.SerialId serialId = 1;
-        required uint32 sessionId = 2;
-        required linkbot.DaemonToRobotMessage toRobot = 4;
+        optional radio.RoutedRadioMessage routedRadioMessage = 4;
     }
-    message Result {
-        required barobo.Status status = 1;
-        required int32 queuedMessages = 2;
+    message Out {
+        optional int32 queuedMessages = 1;
     }
 }
 
-message transmitRadioBroadcast {
-    message In {
-        required uint32 sessionId = 1;
-        required linkbot.DaemonToRobotMessage toRobot = 3;
-    }
-    message Result {
-        required barobo.Status status = 1;
-        required int32 queuedMessages = 2;
+// =============================================================================
+// Dongle interface
+
+message RpcRequest {
+    optional uint32 requestId = 1;
+
+    oneof arg {
+        GetFirmwareVersionString.In getFirmwareVersionString = 2;
+        Reboot.In reboot = 3;
+        SetRadioMode.In setRadioMode = 3;
+        SetSessionId.In setSessionId = 5;
+        Transmit.In transmit = 6;
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////
-// Broadcasts
+message RpcReply {
+    optional uint32 requestId = 1;
 
-message receiveTransmission {
-    required barobo.SerialId serialId = 1;
-    optional uint32 sessionId = 2;
-    required linkbot.RobotToDaemonMessage toDaemon = 4;
+    oneof arg {
+        GetFirmwareVersionString.Out getFirmwareVersionString = 2;
+        Reboot.Out reboot = 3;
+        SetRadioMode.Out setRadioMode = 4;
+        SetSessionId.Out setSessionId = 5;
+        Transmit.Out transmit = 6;
+    }
+}
+
+message ReceiveTransmission {
+    optional radio.RoutedRadioMessage routedRadioMessage = 4;
+}
+
+message DebugMessage {
+    optional string value = 1 [(nanopb).max_size = 128];
+}
+
+// =============================================================================
+// Top-level dongle interface messages
+
+message DaemonToDongle {
+    // Message sent via SFP from linkbotd to a Z-Link or Linkbot acting as a dongle.
+
+    oneof arg {
+        RpcRequest rpcRequest = 1;
+    }
+}
+
+message DongleToDaemon {
+    // Message sent via SFP from a Z-Link or Linkbot acting as a dongle to linkbotd.
+
+    oneof arg {
+        RpcReply rpcReply = 1;
+
+        ReceiveTransmission receiveTransmission = 2;
+        DebugMessage debugMessage = 3;
+    }
 }

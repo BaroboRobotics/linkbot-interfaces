@@ -1,64 +1,164 @@
-import "nanopb.proto";
-//import "rpc-options.proto";
-import "commontypes.proto";
-import "rpc.proto";
-package barobo.Daemon;
+// This file defines control messages transmitted between Linkbot clients (e.g., language bindings)
+// and the Linkbot daemon, linkbotd.
 
-message TcpEndpoint {
-    required string address = 1 [(nanopb).max_size = 64];
-    required uint32 port = 2;
+syntax = "proto2";
+
+import "nanopb.proto";
+import "commontypes.proto";
+import "robot.proto";
+
+package linkbot.daemon;
+
+// =============================================================================
+// Daemon RPC messages
+
+enum Status {
+    // TODO: clean out the deprecated junk from this list
+
+    OK = 0;
+    CANNOT_OPEN_DONGLE = 1;
+    DONGLE_NOT_FOUND = 2;
+    PORT_OUT_OF_RANGE = 3;
+
+    UNREGISTERED_SERIALID = 5;
+    INVALID_SERIALID = 6;
+
+    DAEMON_UNAVAILABLE = 7;
+
+    STRANGE_DONGLE = 8;
+    INCOMPATIBLE_FIRMWARE = 9;
+
+    BUFFER_OVERFLOW = 10;
+    OTHER_ERROR = 11;
 }
 
-// Methods
-
-message getDaemonVersionString {
+message GetDaemonVersionString {
     message In {}
-    message Result {
+    message Out {
         required string value = 1 [(nanopb).max_size = 128];
     }
 }
 
-message resolveSerialId {
+message GetDongleCount {
+    // Get the number of dongles currently used by the daemon. Normally 0, 1, or 2.
+
+    message In {}
+    message Out {
+        optional uint32 dongleCount = 1;
+    }
+}
+
+message AddRobotRefs {
+    // Add references to a robot in the daemon's robot list. If the ref count for a robot is now 1,
+    // the daemon makes a connection to the robot.
     message In {
-        required barobo.SerialId serialId = 1;
+        repeated SerialId serialIds = 1;
     }
-    message Result {
-        required Status status = 1;
-        required TcpEndpoint endpoint = 2;
+    message Out {
+        optional Status status = 1;
     }
 }
 
-// If the daemon has acquired the dongle, relinquish it. Attempt to (re)acquire
-// it after the specified time in seconds.
-message cycleDongle {
+message ReleaseRobotRefs {
+    // Release references to a robot in the daemon's robot list. If the ref count for a robot is now
+    // 0, the daemon disconnects from the robot.
     message In {
-        required uint32 seconds = 1;
+        repeated SerialId serialIds = 1;
     }
-    message Result {}
+    message Out {
+        optional Status status = 1;
+    }
 }
 
-message sendRobotPing {
+// TODO: Add reordering requests, e.g., slide(robots[x..y] to z) in the ordered list of robots.
+
+enum BroadcastMethod {
+    BROADCAST = 0;
+    // A true radio broadcast to all stations within earshot.
+
+    MULTICAST_LOCAL = 1;
+    // A multicast radio broadcast to all stations currently connected to the initiating client.
+
+    MULTICAST_GLOBAL = 2;
+    // A multicast radio broadcast to all stations currently connected to the daemon.
+}
+
+message Transmit {
     message In {
-        repeated SerialId destinations = 1 [(nanopb).max_count = 8];
-        optional uint32 peripheralResetMask = 2;
+        optional BroadcastMethod broadcastMethod = 1;
+        // If present, determines the behavior of an empty destinations list. If not present, assume
+        // defaults to BroadcastMethod.BROADCAST.
+
+        repeated SerialId destinations = 2;
+        // If `destinations` contains a single serial ID, the message is unicast transmitted and
+        // `broadcastMethod` is ignored.
+        // If `destinations` contains multiple serial IDs, the message is multicast transmitted to
+        // the listed serial IDs and `broadcastMethod` is ignored.
+        // If `destinations` is empty, the true destinations are determined by `broadcastMethod`.
+
+        repeated robot.ClientToRobot payload = 4;
     }
-    message Result {
-        required Status status = 1;
+    message Out {
+        optional Status status = 1;
     }
 }
 
-// TODO: getDongleSerialId method
+// TODO: GetDongleSerialId method
 
-// Broadcasts
+// =============================================================================
+// Daemon interface
 
-message dongleEvent {
-    required Status status = 1;
-    required barobo.rpc.VersionTriplet firmwareVersion = 2;
+message RpcRequest {
+    optional uint32 requestId = 1;
+
+    oneof arg {
+        GetDaemonVersionString.In getDaemonVersionString = 2;
+        GetDongleCount.In getDongleCount = 3;
+        AddRobotRef.In addRobotRef = 4;
+        ReleaseRobotRef.In releaseRobotRef = 5;
+        Transmit.In transmit = 6;
+    }
 }
 
-message robotEvent {
-    required barobo.SerialId serialId = 1;
-    required barobo.rpc.VersionTriplet firmwareVersion = 2;
-    required barobo.rpc.VersionTriplet rpcVersion = 3;
-    required barobo.rpc.VersionTriplet interfaceVersion = 4;
+message RpcReply {
+    optional uint32 requestId = 1;
+
+    oneof arg {
+        GetDaemonVersionString.Out getDaemonVersionString = 2;
+        GetDongleCount.Out getDongleCount = 3;
+        AddRobotRef.Out addRobotRef = 4;
+        ReleaseRobotRef.Out releaseRobotRef = 5;
+        Transmit.Out transmit = 6;
+    }
+}
+
+message ReceiveTransmission {
+    optional SerialId serialId = 1;
+    optional robot.RobotToClient payload = 2;
+}
+
+message DongleEvent {
+    optional string firmwareVersion = 2;
+}
+
+// =============================================================================
+// Top-level daemon interface messages
+
+message ClientToDaemon {
+    // Message sent via WebSocket from a language binding to linkbotd.
+
+    oneof arg {
+        RpcRequest rpcRequest = 1;
+    }
+}
+
+message DaemonToClient {
+    // Message sent via WebSocket from linkbotd to a language binding.
+
+    oneof arg {
+        RpcReply rpcReply = 1;
+
+        ReceiveTransmission receive = 2;
+        DongleEvent dongleEvent = 3;
+    }
 }
