@@ -114,8 +114,8 @@ message RpcRequest {
     oneof arg {
         GetDaemonVersionString.In getDaemonVersionString = 2;
         GetDongleCount.In getDongleCount = 3;
-        AddRobotRef.In addRobotRef = 4;
-        ReleaseRobotRef.In releaseRobotRef = 5;
+        AddRobotRefs.In AddRobotRefs = 4;
+        ReleaseRobotRefs.In releaseRobotRefs = 5;
         Transmit.In transmit = 6;
     }
 }
@@ -126,8 +126,8 @@ message RpcReply {
     oneof arg {
         GetDaemonVersionString.Out getDaemonVersionString = 2;
         GetDongleCount.Out getDongleCount = 3;
-        AddRobotRef.Out addRobotRef = 4;
-        ReleaseRobotRef.Out releaseRobotRef = 5;
+        AddRobotRefs.Out addRobotRefs = 4;
+        ReleaseRobotRefs.Out releaseRobotRefs = 5;
         Transmit.Out transmit = 6;
     }
 }
