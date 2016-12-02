@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(linkbot-protos VERSION 0.1.0 LANGUAGES C CXX)
+project(linkbot-interfaces VERSION 0.1.0 LANGUAGES C CXX)
 
 ##############################################################################
 # Set up nanopb
@@ -87,10 +87,10 @@ if(MSVC)
 	message(WARNING "Disabling PB_STATIC_ASSERT for robot-proto due to Visual C++ token length limit")
 endif()
 
-target_link_libraries(bumpconnect-proto commontypes-proto)
-target_link_libraries(daemon-proto commontypes-proto robot-proto)
-target_link_libraries(dongle-proto radio-proto)
-target_link_libraries(radio-proto commontypes-proto bumpconnnect-proto robot-proto)
+target_link_libraries(bumpconnect-proto PUBLIC commontypes-proto)
+target_link_libraries(daemon-proto PUBLIC commontypes-proto robot-proto)
+target_link_libraries(dongle-proto PUBLIC radio-proto)
+target_link_libraries(radio-proto PUBLIC commontypes-proto bumpconnect-proto robot-proto)
 
 install(
     TARGETS
@@ -108,7 +108,7 @@ install(
 )
 
 install(FILES
-    ${PROJECT_BINARY_DIR}/bumpconnect.h
+    ${PROJECT_BINARY_DIR}/bumpconnect.pb.h
     ${PROJECT_BINARY_DIR}/bumpconnect.pb.hpp
     ${PROJECT_BINARY_DIR}/commontypes.pb.h
     ${PROJECT_BINARY_DIR}/commontypes.pb.hpp
