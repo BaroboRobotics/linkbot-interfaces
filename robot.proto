@@ -19,18 +19,31 @@ message GetAccelerometerData {
     }
 }
 
-message GetLedColor {
-    message In {}
+message GetBatteryVoltage {
+    message In {
+    }
     message Out {
-        optional uint32 value = 1;
+        optional float v = 1;
     }
 }
 
-message SetLedColor {
+message GetAdcRaw {
     message In {
-        optional uint32 value = 1;
     }
-    message Out {}
+    message Out {
+        repeated uint32 values = 1[packed=true, (nanopb).max_count=32];
+    }
+}
+
+message GetButtonState {
+    message In {}
+    message Out {
+        // 000 = all buttons up
+        // 001 = button POWER down
+        // 010 = button A down
+        // 100 = button B down
+        optional uint32 mask = 1;
+    }
 }
 
 message GetBuzzerFrequency {
@@ -40,75 +53,150 @@ message GetBuzzerFrequency {
     }
 }
 
-message SetBuzzerFrequency {
+message GetEncoderValues {
+    message In {}
+    message Out {
+        optional uint32 timestamp = 1;
+        // realistically, the maximum number of encoder values we'll transmit
+        // is 3, but to future-proof this, up the max_count to something
+        // bigger.
+        repeated float values = 2 [packed=true, (nanopb).max_count=32];
+    }
+}
+
+message GetFirmwareVersionString {
+    message In {}
+    message Out {
+        optional string value = 1 [(nanopb).max_size = 128];
+    }
+}
+
+enum FormFactor {
+    I = 0;
+    L = 1;
+    T = 2;
+    DONGLE = 3;
+}
+
+message GetFormFactor {
+    message In {}
+    message Out {
+        optional FormFactor value = 1;
+    }
+}
+
+enum JointState {
+    COAST = 0;
+    HOLD = 1;
+    MOVING = 2;
+    ERROR = 4;
+}
+
+message GetJointStates {
+    message In {}
+    message Out{
+        optional uint32 timestamp = 1;
+        // See GetEncoderValues above
+        repeated JointState values = 2 [packed=true, (nanopb).max_count=32];
+    }
+}
+
+message GetLedColor {
+    message In {}
+    message Out {
+        optional uint32 value = 1;
+    }
+}
+
+
+// =============================================================================
+// Motor Controllers
+//
+// - smooth acceleration
+// - constant velocity (no goal)
+// - constant velocity (to an absolute goal)
+// - constant velocity (to a relative goal)
+// - PID (to an absolute goal)
+// - PID (to a relative goal)
+
+// used by smooth acceleration, constant velocity
+message GetMotorControllerOmega {
     message In {
-        optional float value = 1;
     }
-    message Out {}
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // deceleration
+    }
 }
 
-message EnableButtonEvent {
-    message In{
-        optional bool enable = 1;
-    }
-    message Out {}
-}
-
-message EnableEncoderEvent {
-    message In{
-        message SignalState{
-            // TODO: get rid of this once we can send multiple radio messages per transmission
-            optional bool enable = 1;
-            optional float granularity = 2;
-        }
-
-        optional SignalState encoderOne = 1;
-        optional SignalState encoderTwo = 2;
-        optional SignalState encoderThree = 3;
-    }
-    message Out{}
-}
-
-message EnableJointEvent {
-    message In{
-        optional bool enable = 1;
-    }
-    message Out{}
-}
-
-message EnableAccelerometerEvent {
+// used by smooth acceleration
+message GetMotorControllerAlphaI {
     message In {
-        optional bool enable = 1;
-        optional float granularity = 2;
     }
-
-    message Out{}
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // acceleration
+    }
 }
 
-message SetMotorControllerSafetyThreshold {
+// used by smooth acceleration
+message GetMotorControllerAlphaF {
+    message In {
+    }
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // deceleration
+    }
+}
+
+// used by PID controller
+message GetMotorControllerProportionalGain {
+    message In {
+    }
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Proportional gain for PID controller
+    }
+}
+
+// used by PID controller
+message GetMotorControllerIntegratorGain {
+    message In {
+    }
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Integrator gain for PID
+    }
+}
+
+// used by PID controller
+message GetMotorControllerDerivativeGain {
+    message In {
+    }
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Derivative gain for PID 
+    }
+}
+
+message GetMotorControllerSafetyThreshold {
+    message In {
+    }
+    message Out {
+        repeated uint32 values = 1[packed=true, (nanopb).max_count=32]; // acceleration
+    }
+}
+
+message GetMotorControllerSafetyAngle{
+    message In {
+    }
+    message Out {
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // acceleration
+    }
+}
+
+// used by smooth acceleration, constant velocity
+message SetMotorControllerOmega {
     message In {
         optional uint32 mask = 1;
-        repeated uint32 values = 2 [packed=true, (nanopb).max_count=32]; 
+        repeated float values = 2[packed=true, (nanopb).max_count=32]; 
     }
     message Out {}
 }
-
-message SetMotorControllerSafetyAngle {
-    message In {
-        optional uint32 mask = 1;
-        repeated float values = 2 [packed=true, (nanopb).max_count=32]; 
-    }
-    message Out {}
-}
-
-/* Motor controllers:
- * - smooth acceleration
- * - constant velocity (no goal)
- * - constant velocity (to an absolute goal)
- * - constant velocity (to a relative goal)
- * - PID (to an absolute goal)
- * - PID (to a relative goal)
- */
 
 // used by smooth acceleration
 message SetMotorControllerAlphaI {
@@ -121,15 +209,6 @@ message SetMotorControllerAlphaI {
 
 // used by smooth acceleration
 message SetMotorControllerAlphaF {
-    message In {
-        optional uint32 mask = 1;
-        repeated float values = 2[packed=true, (nanopb).max_count=32]; 
-    }
-    message Out {}
-}
-
-// used by smooth acceleration, constant velocity
-message SetMotorControllerOmega {
     message In {
         optional uint32 mask = 1;
         repeated float values = 2[packed=true, (nanopb).max_count=32]; 
@@ -165,131 +244,45 @@ message SetMotorControllerDerivativeGain {
     }
 }
 
-message GetBatteryVoltage {
+message SetMotorControllerSafetyThreshold {
     message In {
+        optional uint32 mask = 1;
+        repeated uint32 values = 2 [packed=true, (nanopb).max_count=32]; 
     }
-    message Out {
-        optional float v = 1;
-    }
+    message Out {}
 }
 
-message GetAdcRaw {
+message SetMotorControllerSafetyAngle {
     message In {
+        optional uint32 mask = 1;
+        repeated float values = 2 [packed=true, (nanopb).max_count=32]; 
     }
-    message Out {
-        repeated uint32 values = 1[packed=true, (nanopb).max_count=32];
-    }
+    message Out {}
 }
 
-message GetMotorControllerSafetyThreshold {
+
+message ResetEncoderRevs {
+    message In { }
+    message Out { }
+}
+
+message SetBuzzerFrequency {
     message In {
+        optional float value = 1;
     }
-    message Out {
-        repeated uint32 values = 1[packed=true, (nanopb).max_count=32]; // acceleration
-    }
+    message Out {}
 }
 
-message GetMotorControllerSafetyAngle{
+message SetLedColor {
     message In {
+        optional uint32 value = 1;
     }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // acceleration
-    }
+    message Out {}
 }
 
-// used by smooth acceleration
-message GetMotorControllerAlphaI {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // acceleration
-    }
-}
-
-// used by smooth acceleration
-message GetMotorControllerAlphaF {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // deceleration
-    }
-}
-
-// used by smooth acceleration, constant velocity
-message GetMotorControllerOmega {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // deceleration
-    }
-}
-
-// used by PID controller
-message GetMotorControllerProportionalGain {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Proportional gain for PID controller
-    }
-}
-
-// used by PID controller
-message GetMotorControllerIntegratorGain {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Integrator gain for PID
-    }
-}
-
-// used by PID controller
-message GetMotorControllerDerivativeGain {
-    message In {
-    }
-    message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Derivative gain for PID 
-    }
-}
-
-message GetEncoderValues {
-    message In {}
-    message Out {
-        optional uint32 timestamp = 1;
-        // realistically, the maximum number of encoder values we'll transmit
-        // is 3, but to future-proof this, up the max_count to something
-        // bigger.
-        repeated float values = 2 [packed=true, (nanopb).max_count=32];
-    }
-}
-
-enum JointState {
-    COAST = 0;
-    HOLD = 1;
-    MOVING = 2;
-    ERROR = 4;
-}
-
-message GetJointStates {
-    message In {}
-    message Out{
-        optional uint32 timestamp = 1;
-        // See GetEncoderValues above
-        repeated JointState values = 2 [packed=true, (nanopb).max_count=32];
-    }
-}
-
-enum FormFactor {
-    I = 0;
-    L = 1;
-    T = 2;
-    DONGLE = 3;
-}
-
-message GetFormFactor {
-    message In {}
-    message Out {
-        optional FormFactor value = 1;
-    }
+message Stop {
+    message In {optional uint32 mask = 1;}
+    message Out {}
 }
 
 // For standard acceleration:
@@ -323,6 +316,9 @@ message Goal {
     }
     optional Type type = 1;
     optional float goal = 2; // absolute, relative angles; or coefficient in infinite case
+    // type and goal are actually required to do anything -- the rest of the values default to:
+    // CONSTVEL, 0, HOLD
+
     optional Controller controller = 3;
     optional float timeout = 4; // Seconds from now to time out
     optional JointState modeOnTimeout = 5;
@@ -333,6 +329,7 @@ message Goal {
 //        motor?
 message Move {
     message In {
+        // TODO: get rid of this once we can send multiple messages per radio transmission
         optional Goal motorOneGoal = 1;
         optional Goal motorTwoGoal = 2;
         optional Goal motorThreeGoal = 3;
@@ -340,32 +337,42 @@ message Move {
     message Out { }
 }
 
-message ResetEncoderRevs {
-    message In { }
-    message Out { }
+message EnableAccelerometerEvent {
+    message In {
+        optional bool enable = 1;
+        optional float granularity = 2;
+    }
+
+    message Out{}
 }
 
-message Stop {
-    message In {optional uint32 mask = 1;}
+message EnableButtonEvent {
+    message In{
+        optional bool enable = 1;
+    }
     message Out {}
 }
 
-message GetButtonState {
-    message In {}
-    message Out {
-        // 000 = all buttons up
-        // 001 = button POWER down
-        // 010 = button A down
-        // 100 = button B down
-        optional uint32 mask = 1;
+message EnableEncoderEvent {
+    message In{
+        message SignalState{
+            // TODO: get rid of this once we can send multiple radio messages per transmission
+            optional bool enable = 1;
+            optional float granularity = 2;
+        }
+
+        optional SignalState encoderOne = 1;
+        optional SignalState encoderTwo = 2;
+        optional SignalState encoderThree = 3;
     }
+    message Out{}
 }
 
-message GetFirmwareVersionString {
-    message In {}
-    message Out {
-        optional string value = 1 [(nanopb).max_size = 128];
+message EnableJointEvent {
+    message In{
+        optional bool enable = 1;
     }
+    message Out{}
 }
 
 message WriteEeprom {
@@ -425,98 +432,166 @@ message Reboot {
 // Robot interface
 
 message RpcRequest {
+    // This message has a lot of fields. Since field tag numbers 1 - 15 require one byte on the
+    // wire and 16 - 2047 require two bytes, priority for the low-numbered fields is given to RPC
+    // requests which are small and bursty. Other, less frequently used requests are given field
+    // tag numbers starting at 16.
+
     optional uint32 requestId = 1;
 
     oneof arg {
-        GetAccelerometerData.In getAccelerometerData = 2;
-        GetAdcRaw.In getAdcRaw = 3;
-        GetLedColor.In getLedColor = 4;
+        // =====================================================================
+        // Constant read-only attributes -- these values will not change during the execution of the
+        // Linkbot firmware main program.
+
+        GetFirmwareVersionString.In getFirmwareVersionString = 16;
+        GetFormFactor.In getFormFactor = 17;
+
+        // =====================================================================
+        // Variable read-only attributes -- these values may change over the execution of the
+        // Linkbot firmware main program.
+
+        GetAdcRaw.In getAdcRaw = 18;
+        GetBatteryVoltage.In getBatteryVoltage = 19;
+
+        // =====================================================================
+        // Streamable, variable read-only attributes -- these values may change over the execution
+        // of the Linkbot firmware main program, AND you can stream updates to them via events.
+
+        GetAccelerometerData.In getAccelerometerData = 20;
+        GetButtonState.In getButtonState = 21;
+        GetEncoderValues.In getEncoderValues = 22;
+        GetJointStates.In getJointStates = 23;
+
+        EnableAccelerometerEvent.In enableAccelerometerEvent = 24;
+        EnableButtonEvent.In enableButtonEvent = 25;
+        EnableEncoderEvent.In enableEncoderEvent = 26;
+        EnableJointEvent.In enableJointEvent = 27;
+
+        // =====================================================================
+        // Read/write attributes -- you can adjust these values to modify the behavior of the
+        // Linkbot firmware main program.
+
+        GetBuzzerFrequency.In getBuzzerFrequency = 2;
+        GetLedColor.In getLedColor = 3;
+
+        GetMotorControllerOmega.In getMotorControllerOmega = 28;
+        GetMotorControllerAlphaI.In getMotorControllerAlphaI = 29;
+        GetMotorControllerAlphaF.In getMotorControllerAlphaF = 30;
+        GetMotorControllerProportionalGain.In getMotorControllerProportionalGain = 31;
+        GetMotorControllerIntegratorGain.In getMotorControllerIntegratorGain = 32;
+        GetMotorControllerDerivativeGain.In getMotorControllerDerivativeGain = 33;
+        GetMotorControllerSafetyThreshold.In getMotorControllerSafetyThreshold = 34;
+        GetMotorControllerSafetyAngle.In getMotorControllerSafetyAngle = 35;
+
+        SetBuzzerFrequency.In setBuzzerFrequency = 4;
         SetLedColor.In setLedColor = 5;
-        GetBuzzerFrequency.In getBuzzerFrequency = 6;
-        SetBuzzerFrequency.In setBuzzerFrequency = 7;
-        EnableAccelerometerEvent.In enableAccelerometerEvent = 8;
-        EnableButtonEvent.In enableButtonEvent = 9;
-        EnableEncoderEvent.In enableEncoderEvent = 10;
-        EnableJointEvent.In enableJointEvent = 11;
-        GetMotorControllerSafetyThreshold.In getMotorControllerSafetyThreshold = 12;
-        GetMotorControllerSafetyAngle.In getMotorControllerSafetyAngle = 13;
-        GetMotorControllerAlphaI.In getMotorControllerAlphaI = 14;
-        GetMotorControllerAlphaF.In getMotorControllerAlphaF = 15;
-        GetMotorControllerOmega.In getMotorControllerOmega = 16;
-        GetMotorControllerProportionalGain.In getMotorControllerProportionalGain = 17;
-        GetMotorControllerIntegratorGain.In getMotorControllerIntegratorGain = 18;
-        GetMotorControllerDerivativeGain.In getMotorControllerDerivativeGain = 19;
-        SetMotorControllerSafetyThreshold.In setMotorControllerSafetyThreshold = 20;
-        SetMotorControllerSafetyAngle.In setMotorControllerSafetyAngle = 21;
-        SetMotorControllerAlphaI.In setMotorControllerAlphaI = 22;
-        SetMotorControllerAlphaF.In setMotorControllerAlphaF = 23;
-        SetMotorControllerOmega.In setMotorControllerOmega = 24;
-        SetMotorControllerProportionalGain.In setMotorControllerProportionalGain = 25;
-        SetMotorControllerIntegratorGain.In setMotorControllerIntegratorGain = 26;
-        SetMotorControllerDerivativeGain.In setMotorControllerDerivativeGain = 27;
-        GetBatteryVoltage.In getBatteryVoltage = 28;
-        GetEncoderValues.In getEncoderValues = 29;
-        GetFormFactor.In getFormFactor = 30;
-        GetJointStates.In getJointStates = 31;
-        GetButtonState.In getButtonState = 32;
-        GetFirmwareVersionString.In getFirmwareVersionString = 33;
-        Move.In move = 34;
-        ResetEncoderRevs.In resetEncoderRevs = 35;
-        Stop.In stop = 36;
-        WriteEeprom.In writeEeprom = 37;
-        ReadEeprom.In readEeprom = 38;
-        WriteTwi.In writeTwi = 39;
-        ReadTwi.In readTwi = 40;
-        WriteReadTwi.In writeReadTwi = 41;
-        Reboot.In reboot = 42;
+
+        SetMotorControllerOmega.In setMotorControllerOmega = 36;
+        SetMotorControllerAlphaI.In setMotorControllerAlphaI = 37;
+        SetMotorControllerAlphaF.In setMotorControllerAlphaF = 38;
+        SetMotorControllerProportionalGain.In setMotorControllerProportionalGain = 39;
+        SetMotorControllerIntegratorGain.In setMotorControllerIntegratorGain = 40;
+        SetMotorControllerDerivativeGain.In setMotorControllerDerivativeGain = 41;
+        SetMotorControllerSafetyThreshold.In setMotorControllerSafetyThreshold = 42;
+        SetMotorControllerSafetyAngle.In setMotorControllerSafetyAngle = 43;
+
+        // =====================================================================
+        // Commands -- these messages have immediate side effects in the execution of the Linkbot
+        // firmware main program.
+
+        ResetEncoderRevs.In resetEncoderRevs = 44;
+        Move.In move = 45;
+        Stop.In stop = 46;
+        Reboot.In reboot = 47;
+
+        // =====================================================================
+        // Read/write commands
+
+        WriteEeprom.In writeEeprom = 48;
+        ReadEeprom.In readEeprom = 49;
+
+        WriteTwi.In writeTwi = 50;
+        ReadTwi.In readTwi = 51;
+        WriteReadTwi.In writeReadTwi = 52;
     }
 }
 
 message RpcReply {
+    // As in RpcRequest, priority to low-numbered fields is given to small, bursty RPC replies.
+
     optional uint32 requestId = 1;
 
     oneof arg {
-        GetAccelerometerData.Out getAccelerometerData = 2;
-        GetAdcRaw.Out getAdcRaw = 3;
-        GetLedColor.Out getLedColor = 4;
+        // =====================================================================
+        // Constant read-only attributes
+
+        GetFirmwareVersionString.Out getFirmwareVersionString = 16;
+        GetFormFactor.Out getFormFactor = 17;
+
+        // =====================================================================
+        // Variable read-only attributes
+
+        GetAdcRaw.Out getAdcRaw = 18;
+        GetBatteryVoltage.Out getBatteryVoltage = 19;
+
+        // =====================================================================
+        // Streamable, variable read-only attributes
+
+        GetAccelerometerData.Out getAccelerometerData = 20;
+        GetButtonState.Out getButtonState = 21;
+        GetEncoderValues.Out getEncoderValues = 22;
+        GetJointStates.Out getJointStates = 23;
+
+        EnableAccelerometerEvent.Out enableAccelerometerEvent = 24;
+        EnableButtonEvent.Out enableButtonEvent = 25;
+        EnableEncoderEvent.Out enableEncoderEvent = 26;
+        EnableJointEvent.Out enableJointEvent = 27;
+
+        // =====================================================================
+        // Read/write attributes
+
+        GetBuzzerFrequency.Out getBuzzerFrequency = 2;
+        GetLedColor.Out getLedColor = 3;
+
+        GetMotorControllerOmega.Out getMotorControllerOmega = 28;
+        GetMotorControllerAlphaI.Out getMotorControllerAlphaI = 29;
+        GetMotorControllerAlphaF.Out getMotorControllerAlphaF = 30;
+        GetMotorControllerProportionalGain.Out getMotorControllerProportionalGain = 31;
+        GetMotorControllerIntegratorGain.Out getMotorControllerIntegratorGain = 32;
+        GetMotorControllerDerivativeGain.Out getMotorControllerDerivativeGain = 33;
+        GetMotorControllerSafetyThreshold.Out getMotorControllerSafetyThreshold = 34;
+        GetMotorControllerSafetyAngle.Out getMotorControllerSafetyAngle = 35;
+
+        SetBuzzerFrequency.Out setBuzzerFrequency = 4;
         SetLedColor.Out setLedColor = 5;
-        GetBuzzerFrequency.Out getBuzzerFrequency = 6;
-        SetBuzzerFrequency.Out setBuzzerFrequency = 7;
-        EnableAccelerometerEvent.Out enableAccelerometerEvent = 8;
-        EnableButtonEvent.Out enableButtonEvent = 9;
-        EnableEncoderEvent.Out enableEncoderEvent = 10;
-        EnableJointEvent.Out enableJointEvent = 11;
-        GetMotorControllerSafetyThreshold.Out getMotorControllerSafetyThreshold = 12;
-        GetMotorControllerSafetyAngle.Out getMotorControllerSafetyAngle = 13;
-        GetMotorControllerAlphaI.Out getMotorControllerAlphaI = 14;
-        GetMotorControllerAlphaF.Out getMotorControllerAlphaF = 15;
-        GetMotorControllerOmega.Out getMotorControllerOmega = 16;
-        GetMotorControllerProportionalGain.Out getMotorControllerProportionalGain = 17;
-        GetMotorControllerIntegratorGain.Out getMotorControllerIntegratorGain = 18;
-        GetMotorControllerDerivativeGain.Out getMotorControllerDerivativeGain = 19;
-        SetMotorControllerSafetyThreshold.Out setMotorControllerSafetyThreshold = 20;
-        SetMotorControllerSafetyAngle.Out setMotorControllerSafetyAngle = 21;
-        SetMotorControllerAlphaI.Out setMotorControllerAlphaI = 22;
-        SetMotorControllerAlphaF.Out setMotorControllerAlphaF = 23;
-        SetMotorControllerOmega.Out setMotorControllerOmega = 24;
-        SetMotorControllerProportionalGain.Out setMotorControllerProportionalGain = 25;
-        SetMotorControllerIntegratorGain.Out setMotorControllerIntegratorGain = 26;
-        SetMotorControllerDerivativeGain.Out setMotorControllerDerivativeGain = 27;
-        GetBatteryVoltage.Out getBatteryVoltage = 28;
-        GetEncoderValues.Out getEncoderValues = 29;
-        GetFormFactor.Out getFormFactor = 30;
-        GetJointStates.Out getJointStates = 31;
-        GetButtonState.Out getButtonState = 32;
-        GetFirmwareVersionString.Out getFirmwareVersionString = 33;
-        Move.Out move = 34;
-        ResetEncoderRevs.Out resetEncoderRevs = 35;
-        Stop.Out stop = 36;
-        WriteEeprom.Out writeEeprom = 37;
-        ReadEeprom.Out readEeprom = 38;
-        WriteTwi.Out writeTwi = 39;
-        ReadTwi.Out readTwi = 40;
-        WriteReadTwi.Out writeReadTwi = 41;
-        Reboot.Out reboot = 42;
+
+        SetMotorControllerOmega.Out setMotorControllerOmega = 36;
+        SetMotorControllerAlphaI.Out setMotorControllerAlphaI = 37;
+        SetMotorControllerAlphaF.Out setMotorControllerAlphaF = 38;
+        SetMotorControllerProportionalGain.Out setMotorControllerProportionalGain = 39;
+        SetMotorControllerIntegratorGain.Out setMotorControllerIntegratorGain = 40;
+        SetMotorControllerDerivativeGain.Out setMotorControllerDerivativeGain = 41;
+        SetMotorControllerSafetyThreshold.Out setMotorControllerSafetyThreshold = 42;
+        SetMotorControllerSafetyAngle.Out setMotorControllerSafetyAngle = 43;
+
+        // =====================================================================
+        // Commands
+
+        ResetEncoderRevs.Out resetEncoderRevs = 44;
+        Move.Out move = 45;
+        Stop.Out stop = 46;
+        Reboot.Out reboot = 47;
+
+        // =====================================================================
+        // Read/write commands
+
+        WriteEeprom.Out writeEeprom = 48;
+        ReadEeprom.Out readEeprom = 49;
+
+        WriteTwi.Out writeTwi = 50;
+        ReadTwi.Out readTwi = 51;
+        WriteReadTwi.Out writeReadTwi = 52;
     }
 }
 
@@ -601,10 +676,11 @@ message RobotToClient {
     oneof arg {
         RpcReply rpcReply = 1;
 
-        ButtonEvent buttonEvent = 2;
-        EncoderEvent encoderEvent = 3;
-        AccelerometerEvent accelerometerEvent = 4;
+        AccelerometerEvent accelerometerEvent = 2;
+        ButtonEvent buttonEvent = 3;
+        EncoderEvent encoderEvent = 4;
         JointEvent jointEvent = 5;
+
         DebugMessageEvent debugMessageEvent = 6;
 
         ConnectionTerminated connectionTerminated = 7;

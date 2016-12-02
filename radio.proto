@@ -34,5 +34,6 @@ message RoutedRadioMessage {
     // radio in order to use Linkbots themselves as dongles.
 
     optional RadioMessage payload = 3;
-    // The actual guts of the message.
+    // The actual guts of the message. This is factored out to a separate message, so that we can
+    // convert it to a repeated message later -- oneof fields cannot directly be repeated.
 }
