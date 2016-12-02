@@ -70,7 +70,7 @@ message RpcRequest {
     oneof arg {
         GetFirmwareVersionString.In getFirmwareVersionString = 2;
         Reboot.In reboot = 3;
-        SetRadioMode.In setRadioMode = 3;
+        SetRadioMode.In setRadioMode = 4;
         SetSessionId.In setSessionId = 5;
         Transmit.In transmit = 6;
     }
