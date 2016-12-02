@@ -4,6 +4,7 @@
 syntax = "proto2";
 
 import "nanopb.proto";
+import "commontypes.proto";
 import "radio.proto";
 
 package linkbot.dongle;
