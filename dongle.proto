@@ -46,11 +46,18 @@ message SetSessionId {
 }
 
 message Transmit {
+    // Transmit a message. Transmission method -- unicast or broadcast -- is determined by the
+    // presence of the `destination` field.
+    //
+    // Note that a Transmit.In message with no `routedRadioMessage` can be used to query the number
+    // of queued messages currently in the radio output buffer.
+
     message In {
-        optional radio.RoutedRadioMessage routedRadioMessage = 4;
+        optional SerialId destination = 1;
+        optional radio.RoutedRadioMessage routedRadioMessage = 2;
     }
     message Out {
-        optional int32 queuedMessages = 1;
+        optional int32 queuedMessageCount = 1;
     }
 }
 
@@ -82,7 +89,8 @@ message RpcReply {
 }
 
 message ReceiveTransmission {
-    optional radio.RoutedRadioMessage routedRadioMessage = 4;
+    optional SerialId source = 1;
+    optional radio.RoutedRadioMessage routedRadioMessage = 2;
 }
 
 message DebugMessage {
