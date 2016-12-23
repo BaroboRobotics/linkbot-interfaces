@@ -29,6 +29,7 @@ RPCDEF_CPP((barobo, Robot),
         (setMotorControllerProportionalGain)
         (setMotorControllerIntegratorGain)
         (setMotorControllerDerivativeGain)
+        (setResetOnDisconnect)
         (getBatteryVoltage)
         (getEncoderValues)
         (getFormFactor)

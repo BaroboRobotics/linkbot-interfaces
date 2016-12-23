@@ -34,6 +34,7 @@ RPCDEF_HPP(
         (setMotorControllerProportionalGain)
         (setMotorControllerIntegratorGain)
         (setMotorControllerDerivativeGain)
+        (setResetOnDisconnect)
         (getBatteryVoltage)
         (getEncoderValues)
         (getFormFactor)
