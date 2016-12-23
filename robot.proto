@@ -175,7 +175,8 @@ message setMotorControllerDerivativeGain {
 message setResetOnDisconnect {
     message In {
         // Define by `mask |= (1 << barobo_Peripheral_MOTOR1)`, etc.
-        required uint32 peripheralResetMask = 1;
+        required uint32 mask = 1;
+        required uint32 peripheralResetMask = 2;
     }
     message Result {
     }
