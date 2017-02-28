@@ -51,6 +51,9 @@ RPCDEF_HPP(
         (readTwi)
         (writeReadTwi)
         (reboot)
+        (getBCRemotes)
+        (getBCMaster)
+        (getBCPoses)
         ,
         // all broadcasts
         (buttonEvent)

@@ -1,4 +1,5 @@
 import "nanopb.proto";
+import "commontypes.proto";
 //import "rpc-options.proto";
 package barobo.Robot;
 
@@ -445,6 +446,32 @@ message writeReadTwi {
 message reboot {
     message In {}
     message Result {}
+}
+
+// Get a list of serial ID's that are the bump-connected robot's list of remotes.
+message getBCRemotes {
+    message In {}
+    message Result {
+        repeated barobo.SerialId serialId = 1 [(nanopb).max_count=8];
+    }
+}
+
+message getBCMaster {
+    message In {}
+    message Result {
+        optional barobo.SerialId serialId = 1;
+    }
+}
+
+message getBCPoses {
+    message In {}
+    message Result {
+        message Angles {
+            required float a1 = 1;
+            required float a2 = 2;
+        }
+        repeated Angles angles = 1 [(nanopb).max_count=32];
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////

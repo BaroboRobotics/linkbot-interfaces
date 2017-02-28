@@ -46,6 +46,9 @@ RPCDEF_CPP((barobo, Robot),
         (readTwi)
         (writeReadTwi)
         (reboot)
+        (getBCRemotes)
+        (getBCMaster)
+        (getBCPoses)
         ,
         // all broadcasts
         (buttonEvent)
