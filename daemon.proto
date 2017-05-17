@@ -35,7 +35,7 @@ enum Status {
 message GetDaemonVersionString {
     message In {}
     message Out {
-        required string value = 1 [(nanopb).max_size = 128];
+        optional string value = 1 [(nanopb).max_size = 128];
     }
 }
 
