@@ -508,6 +508,7 @@ message RpcRequest {
         // Commands -- these messages have immediate side effects in the execution of the Linkbot
         // firmware main program.
 
+        SetResetOnDisconnect.In setResetOnDisconnect = 53;
         ResetEncoderRevs.In resetEncoderRevs = 44;
         Move.In move = 45;
         Stop.In stop = 46;
@@ -586,6 +587,7 @@ message RpcReply {
         // =====================================================================
         // Commands
 
+        SetResetOnDisconnect.Out setResetOnDisconnect = 53;
         ResetEncoderRevs.Out resetEncoderRevs = 44;
         Move.Out move = 45;
         Stop.Out stop = 46;
