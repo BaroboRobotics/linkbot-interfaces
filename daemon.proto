@@ -95,6 +95,17 @@ message transmit {
         // If `destinations` contains multiple serial IDs, the message is multicast transmitted to
         // the listed serial IDs and `broadcastMethod` is ignored.
         // If `destinations` is empty, the true destinations are determined by `broadcastMethod`.
+        //
+        // For example:
+        //   - ["ZRG6"] unicasts to one station (`broadcastMethod` is ignored)
+        //   - ["ZRG6", "2KDV"] multicasts to two stations (`broadcastMethod` is ignored)
+        //   - [] depends on the value/presence of `broadcastMethod`:
+        //       - all stations by default
+        //         (`!has_broadcastMethod || broadcastMethod == BroadcastMethod.BROADCAST`)
+        //       - all stations connected to the client
+        //         (`broadcastMethod == BroadcastMethod.MULTICAST_LOCAL`)
+        //       - all stations connected to the daemon
+        //         (`broadcastMethod == BroadcastMethod.MULTICAST_GLOBAL`)
 
         optional robot.ClientToRobot payload = 4;
     }
