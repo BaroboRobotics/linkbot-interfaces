@@ -32,14 +32,14 @@ enum Status {
     OTHER_ERROR = 11;
 }
 
-message GetDaemonVersionString {
+message getDaemonVersionString {
     message In {}
     message Out {
         optional string value = 1 [(nanopb).max_size = 128];
     }
 }
 
-message GetDongleCount {
+message getDongleCount {
     // Get the number of dongles currently used by the daemon. Normally 0, 1, or 2.
 
     message In {}
@@ -48,7 +48,7 @@ message GetDongleCount {
     }
 }
 
-message AddRobotRefs {
+message addRobotRefs {
     // Add references to a robot in the daemon's robot list. If the ref count for a robot is now 1,
     // the daemon makes a connection to the robot.
     message In {
@@ -59,7 +59,7 @@ message AddRobotRefs {
     }
 }
 
-message ReleaseRobotRefs {
+message releaseRobotRefs {
     // Release references to a robot in the daemon's robot list. If the ref count for a robot is now
     // 0, the daemon disconnects from the robot.
     message In {
@@ -83,7 +83,7 @@ enum BroadcastMethod {
     // A multicast radio broadcast to all stations currently connected to the daemon.
 }
 
-message Transmit {
+message transmit {
     message In {
         optional BroadcastMethod broadcastMethod = 1;
         // If present, determines the behavior of an empty destinations list. If not present, assume
@@ -112,11 +112,11 @@ message RpcRequest {
     optional uint32 requestId = 1;
 
     oneof arg {
-        GetDaemonVersionString.In getDaemonVersionString = 2;
-        GetDongleCount.In getDongleCount = 3;
-        AddRobotRefs.In AddRobotRefs = 4;
-        ReleaseRobotRefs.In releaseRobotRefs = 5;
-        Transmit.In transmit = 6;
+        getDaemonVersionString.In getDaemonVersionString = 2;
+        getDongleCount.In getDongleCount = 3;
+        addRobotRefs.In addRobotRefs = 4;
+        releaseRobotRefs.In releaseRobotRefs = 5;
+        transmit.In transmit = 6;
     }
 }
 
@@ -124,11 +124,11 @@ message RpcReply {
     optional uint32 requestId = 1;
 
     oneof arg {
-        GetDaemonVersionString.Out getDaemonVersionString = 2;
-        GetDongleCount.Out getDongleCount = 3;
-        AddRobotRefs.Out addRobotRefs = 4;
-        ReleaseRobotRefs.Out releaseRobotRefs = 5;
-        Transmit.Out transmit = 6;
+        getDaemonVersionString.Out getDaemonVersionString = 2;
+        getDongleCount.Out getDongleCount = 3;
+        addRobotRefs.Out addRobotRefs = 4;
+        releaseRobotRefs.Out releaseRobotRefs = 5;
+        transmit.Out transmit = 6;
     }
 }
 
