@@ -72,6 +72,16 @@ message releaseRobotRefs {
 
 // TODO: Add reordering requests, e.g., slide(robots[x..y] to z) in the ordered list of robots.
 
+message transmit {
+    message In {
+        optional SerialId destination = 1;
+        optional robot.ClientToRobot payload = 2;
+    }
+    message Out {
+        optional Status status = 1;
+    }
+}
+
 enum BroadcastMethod {
     BROADCAST = 0;
     // A true radio broadcast to all stations within earshot.
@@ -83,21 +93,19 @@ enum BroadcastMethod {
     // A multicast radio broadcast to all stations currently connected to the daemon.
 }
 
-message transmit {
+message transmitBroadcast {
     message In {
         optional BroadcastMethod broadcastMethod = 1;
         // If present, determines the behavior of an empty destinations list. If not present, assume
         // defaults to BroadcastMethod.BROADCAST.
 
         repeated SerialId destinations = 2 [(nanopb).max_count = 8];
-        // If `destinations` contains a single serial ID, the message is unicast transmitted and
-        // `broadcastMethod` is ignored.
-        // If `destinations` contains multiple serial IDs, the message is multicast transmitted to
+        // If `destinations` contains serial IDs, the message is multicast transmitted to
         // the listed serial IDs and `broadcastMethod` is ignored.
         // If `destinations` is empty, the true destinations are determined by `broadcastMethod`.
         //
         // For example:
-        //   - ["ZRG6"] unicasts to one station (`broadcastMethod` is ignored)
+        //   - ["ZRG6"] multicasts to one station (`broadcastMethod` is ignored)
         //   - ["ZRG6", "2KDV"] multicasts to two stations (`broadcastMethod` is ignored)
         //   - [] depends on the value/presence of `broadcastMethod`:
         //       - all stations by default
@@ -107,7 +115,7 @@ message transmit {
         //       - all stations connected to the daemon
         //         (`broadcastMethod == BroadcastMethod.MULTICAST_GLOBAL`)
 
-        optional robot.ClientToRobot payload = 4;
+        optional robot.ClientToRobotBroadcast payload = 4;
     }
     message Out {
         optional Status status = 1;
@@ -149,7 +157,12 @@ message ReceiveTransmission {
 }
 
 message DongleEvent {
-    optional string firmwareVersion = 2;
+    optional string firmwareVersion = 1 [(nanopb).max_size = 128];
+}
+
+message RobotEvent {
+    optional SerialId serialId = 1;
+    optional string firmwareVersion = 2 [(nanopb).max_size = 128];
 }
 
 // =============================================================================
@@ -171,5 +184,6 @@ message DaemonToClient {
 
         ReceiveTransmission receive = 2;
         DongleEvent dongleEvent = 3;
+        RobotEvent robotEvent = 4;
     }
 }

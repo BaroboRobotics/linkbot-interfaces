@@ -262,7 +262,7 @@ message setMotorControllerSafetyAngle {
 
 message setResetOnDisconnect {
     message In {
-        // Define by `mask |= (1 << barobo_Peripheral_MOTOR1)`, etc.
+        // Define by `mask |= (1 << linkbot_robot_Peripheral_MOTOR1)`, etc.
         optional uint32 mask = 1;
         optional uint32 peripheralResetMask = 2;
     }
@@ -647,13 +647,12 @@ message DebugMessageEvent {
     optional string bytestring = 2 [(nanopb).max_size=128];
 }
 
-message ConnectionTerminated {
+message ConnectEvent {
     optional uint32 timestamp = 1;
 }
 
-message PowerOnEvent {
-    // Radio broadcast from a robot to all daemons.
-    optional string version = 1 [(nanopb).max_size = 128];
+message DisconnectEvent {
+    optional uint32 timestamp = 1;
 }
 
 enum Peripheral {
@@ -664,7 +663,7 @@ enum Peripheral {
     BUZZER = 4;
 }
 
-message Ping {
+message ResetPeripherals {
     // Radio broadcast from the daemon to multiple robots.
     optional uint32 peripheralResetMask = 2;
     // Define by `mask |= (1 << linkbot_robot_Peripheral_MOTOR1)`, etc.
@@ -676,9 +675,13 @@ message Ping {
 message ClientToRobot {
     oneof arg {
         RpcRequest rpcRequest = 1;
+    }
+}
 
-        Ping ping = 2;
-        // deprecated? move to hypothetical daemon-to-robot interface?
+message ClientToRobotBroadcast {
+    // These are unacknowledged, connectionless messages.
+    oneof arg {
+        ResetPeripherals resetPeripherals = 1;
     }
 }
 
@@ -693,8 +696,7 @@ message RobotToClient {
 
         DebugMessageEvent debugMessageEvent = 6;
 
-        ConnectionTerminated connectionTerminated = 7;
-        PowerOnEvent powerOnEvent = 8;
-        // deprecated? move to hypothetical daemon-to-robot interface?
+        ConnectEvent connectEvent = 7;
+        DisconnectEvent disconnectEvent = 8;
     }
 }

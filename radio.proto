@@ -12,11 +12,36 @@ package linkbot.radio;
 // =============================================================================
 // Radio messages
 
+message ConnectSession {
+    // Radio broadcast from a daemon to a robot. If the robot is currently disconnected or already
+    // connected to that daemon, it will reply with a linkbot.robot.ConnnectEvent. If the robot is
+    // currently connected to a different daemon, it will reply with a
+    // linkbot.robot.DisconnectEvent.
+}
+
+message DisconnectSession {
+    // Radio broadcast from a daemon to a robot. If the robot is currently connected to that daemon,
+    // it will enter a disconnected state. Regardless, it always replies with a
+    // linkbot.robot.DisconnectEvent.
+}
+
+message PowerOnEvent {
+    // Radio broadcast from a robot to all daemons.
+    optional string version = 1 [(nanopb).max_size = 128];
+
+}
+
 message RadioMessage {
     oneof arg {
         robot.ClientToRobot clientToRobot = 1;
-        robot.RobotToClient robotToClient = 2;
-        bumpconnect.RobotToRobot bumpConnect = 3;
+        robot.ClientToRobotBroadcast clientToRobotBroadcast = 2;
+        robot.RobotToClient robotToClient = 3;
+
+        bumpconnect.RobotToRobot bumpConnect = 4;
+
+        ConnectSession connectSession = 5;
+        DisconnectSession disconnectSession = 6;
+        PowerOnEvent powerOnEvent = 7;
     }
 }
 
