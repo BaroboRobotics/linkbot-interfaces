@@ -624,7 +624,8 @@ message ButtonEvent {
 
 message EncoderEvent {
     optional uint32 timestamp = 1;
-    repeated float values = 2[packed=true, (nanopb).max_count=4];
+    optional uint32 mask = 2;
+    repeated float values = 3[packed=true, (nanopb).max_count=4];
 }
 
 message AccelerometerEvent {
