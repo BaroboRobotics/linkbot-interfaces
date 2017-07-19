@@ -136,6 +136,7 @@ message RpcRequest {
         addRobotRefs.In addRobotRefs = 4;
         releaseRobotRefs.In releaseRobotRefs = 5;
         transmit.In transmit = 6;
+        transmitBroadcast.In transmitBroadcast = 7;
     }
 }
 
