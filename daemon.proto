@@ -149,6 +149,7 @@ message RpcReply {
         addRobotRefs.Out addRobotRefs = 4;
         releaseRobotRefs.Out releaseRobotRefs = 5;
         transmit.Out transmit = 6;
+        transmitBroadcast.Out transmitBroadcast = 7;
     }
 }
 
