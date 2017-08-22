@@ -335,7 +335,7 @@ message Goal {
 // notes: make motor controller attributes per motor
 //        error if move is called on constant velocity-no goal controlled
 //        motor?
-message move {
+message robotMove {
     message In {
         // TODO: get rid of this once we can send multiple messages per radio transmission
         optional Goal motorOneGoal = 1;
@@ -510,7 +510,7 @@ message RpcRequest {
 
         setResetOnDisconnect.In setResetOnDisconnect = 53;
         resetEncoderRevs.In resetEncoderRevs = 44;
-        move.In move = 45;
+        robotMove.In move = 45;
         stop.In stop = 46;
         reboot.In reboot = 47;
 
@@ -589,7 +589,7 @@ message RpcReply {
 
         setResetOnDisconnect.Out setResetOnDisconnect = 53;
         resetEncoderRevs.Out resetEncoderRevs = 44;
-        move.Out move = 45;
+        robotMove.Out move = 45;
         stop.Out stop = 46;
         reboot.Out reboot = 47;
 
