@@ -510,7 +510,7 @@ message RpcRequest {
 
         setResetOnDisconnect.In setResetOnDisconnect = 53;
         resetEncoderRevs.In resetEncoderRevs = 44;
-        robotMove.In move = 45;
+        robotMove.In robotMove = 45;
         stop.In stop = 46;
         reboot.In reboot = 47;
 
@@ -589,7 +589,7 @@ message RpcReply {
 
         setResetOnDisconnect.Out setResetOnDisconnect = 53;
         resetEncoderRevs.Out resetEncoderRevs = 44;
-        robotMove.Out move = 45;
+        robotMove.Out robotMove = 45;
         stop.Out stop = 46;
         reboot.Out reboot = 47;
 
