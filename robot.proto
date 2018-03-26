@@ -3,6 +3,7 @@
 
 syntax = "proto2";
 
+import "commontypes.proto";
 import "nanopb.proto";
 
 package linkbot.robot;
@@ -440,14 +441,14 @@ message reboot {
 message getBCRemotes {
     message In {}
     message Out {
-        repeated barobo.SerialId serialId = 1 [(nanopb).max_count=8];
+        repeated linkbot.SerialId serialId = 1 [(nanopb).max_count=8];
     }
 }
 
 message getBCMaster {
     message In {}
     message Out {
-        optional barobo.SerialId serialId = 1;
+        optional linkbot.SerialId serialId = 1;
     }
 }
 
