@@ -552,9 +552,9 @@ message RpcRequest {
 
         // =====================================================================
         // Pose coding commands
-        getBCRemotes.In getBCRemotes = 53;
-        getBCMaster.In getBCMaster = 54;
-        getBCPoses.In getBCPoses = 55;
+        getBCRemotes.In getBCRemotes = 54;
+        getBCMaster.In getBCMaster = 55;
+        getBCPoses.In getBCPoses = 56;
     }
 }
 
@@ -637,9 +637,9 @@ message RpcReply {
 
         // =====================================================================
         // Pose coding commands
-        getBCRemotes.Out getBCRemotes = 53;
-        getBCMaster.Out getBCMaster = 54;
-        getBCPoses.Out getBCPoses = 55;
+        getBCRemotes.Out getBCRemotes = 54;
+        getBCMaster.Out getBCMaster = 55;
+        getBCPoses.Out getBCPoses = 56;
     }
 }
 
