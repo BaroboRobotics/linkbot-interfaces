@@ -459,7 +459,18 @@ message getBCPoses {
             required float a1 = 1;
             required float a2 = 2;
         }
-        repeated Angles angles = 1 [(nanopb).max_count=32];
+        repeated Angles angles = 1 [(nanopb).max_count=16];
+    }
+}
+
+message getBCPose {
+    message In {
+        required uint32 index = 1;
+    }
+    
+    message Out {
+        optional float a1 = 1;
+        optional float a2 = 2;
     }
 }
 
