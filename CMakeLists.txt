@@ -49,6 +49,7 @@ function(nanopb_add_proto _targetName _protoFile)
     if(NOT CMAKE_SYSTEM_NAME MATCHES "AVR")
         set_target_properties(${_targetName} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     endif()
+    set_target_properties(${_targetName} PROPERTIES CXX_STANDARD 11)
 endfunction()
 
 ################################################################################
@@ -89,39 +90,39 @@ endif()
 
 target_link_libraries(bumpconnect-proto PUBLIC commontypes-proto)
 target_link_libraries(daemon-proto PUBLIC commontypes-proto robot-proto)
-target_link_libraries(dongle-proto PUBLIC radio-proto)
+target_link_libraries(dongle-proto PUBLIC radio-proto commontypes-proto)
 target_link_libraries(radio-proto PUBLIC commontypes-proto bumpconnect-proto robot-proto)
 
-install(
-    TARGETS
-        bumpconnect-proto
-        commontypes-proto
-        daemon-proto
-        dongle-proto
-        radio-proto
-        robot-proto
-    EXPORT barobo
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-)
+# install(
+#     TARGETS
+#        bumpconnect-proto
+#        commontypes-proto
+#        daemon-proto
+#        dongle-proto
+#        radio-proto
+#        robot-proto
+#    EXPORT barobo
+#    LIBRARY DESTINATION lib
+#    ARCHIVE DESTINATION lib
+#    RUNTIME DESTINATION bin
+#    INCLUDES DESTINATION include
+# )
 
-install(FILES
-    ${PROJECT_BINARY_DIR}/bumpconnect.pb.h
-    ${PROJECT_BINARY_DIR}/bumpconnect.pb.hpp
-    ${PROJECT_BINARY_DIR}/commontypes.pb.h
-    ${PROJECT_BINARY_DIR}/commontypes.pb.hpp
-    ${PROJECT_BINARY_DIR}/daemon.pb.h
-    ${PROJECT_BINARY_DIR}/daemon.pb.hpp
-    ${PROJECT_BINARY_DIR}/dongle.pb.h
-    ${PROJECT_BINARY_DIR}/dongle.pb.hpp
-    ${PROJECT_BINARY_DIR}/radio.pb.h
-    ${PROJECT_BINARY_DIR}/radio.pb.hpp
-    ${PROJECT_BINARY_DIR}/robot.pb.h
-    ${PROJECT_BINARY_DIR}/robot.pb.hpp
-    DESTINATION include
-)
+# install(FILES
+#   ${PROJECT_BINARY_DIR}/bumpconnect.pb.h
+#   ${PROJECT_BINARY_DIR}/bumpconnect.pb.hpp
+#   ${PROJECT_BINARY_DIR}/commontypes.pb.h
+##    ${PROJECT_BINARY_DIR}/commontypes.pb.hpp
+#   ${PROJECT_BINARY_DIR}/daemon.pb.h
+#   ${PROJECT_BINARY_DIR}/daemon.pb.hpp
+#   ${PROJECT_BINARY_DIR}/dongle.pb.h
+#   ${PROJECT_BINARY_DIR}/dongle.pb.hpp
+#   ${PROJECT_BINARY_DIR}/radio.pb.h
+#   ${PROJECT_BINARY_DIR}/radio.pb.hpp
+#   ${PROJECT_BINARY_DIR}/robot.pb.h
+#   ${PROJECT_BINARY_DIR}/robot.pb.hpp
+#   DESTINATION include
+# )
 
 # Boilerplate follows
 
