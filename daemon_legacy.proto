@@ -1,6 +1,6 @@
 import "nanopb.proto";
 //import "rpc-options.proto";
-import "commontypes.proto";
+import "commontypes_legacy.proto";
 import "rpc.proto";
 package barobo.Daemon;
 

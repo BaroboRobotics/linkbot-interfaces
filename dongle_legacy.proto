@@ -1,5 +1,5 @@
 import "nanopb.proto";
-import "commontypes.proto";
+import "commontypes_legacy.proto";
 package barobo.Dongle;
 
 //////////////////////////////////////////////////////////////////////////////
