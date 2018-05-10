@@ -3,6 +3,7 @@
 
 syntax = "proto2";
 
+import "commontypes.proto";
 import "nanopb.proto";
 
 package linkbot.robot;
@@ -160,7 +161,7 @@ message getMotorControllerIntegratorGain {
     message In {
     }
     message Out {
-        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Integrator gain for PID
+        repeated float values = 1[packed=true, (nanopb).max_count=32]; // Proportional gain for PID controller
     }
 }
 
@@ -436,6 +437,32 @@ message reboot {
     message Out {}
 }
 
+// Get a list of serial ID's that are the bump-connected robot's list of remotes.
+message getBCRemotes {
+    message In {}
+    message Out {
+        repeated linkbot.SerialId serialId = 1 [(nanopb).max_count=8];
+    }
+}
+
+message getBCMaster {
+    message In {}
+    message Out {
+        optional linkbot.SerialId serialId = 1;
+    }
+}
+
+message getBCPoses {
+    message In {}
+    message Out {
+        message Angles {
+            required float a1 = 1;
+            required float a2 = 2;
+        }
+        repeated Angles angles = 1 [(nanopb).max_count=32];
+    }
+}
+
 // =============================================================================
 // Robot interface
 
@@ -523,6 +550,12 @@ message RpcRequest {
         writeTwi.In writeTwi = 50;
         readTwi.In readTwi = 51;
         writeReadTwi.In writeReadTwi = 52;
+
+        // =====================================================================
+        // Pose coding commands
+        getBCRemotes.In getBCRemotes = 54;
+        getBCMaster.In getBCMaster = 55;
+        getBCPoses.In getBCPoses = 56;
     }
 }
 
@@ -602,8 +635,17 @@ message RpcReply {
         writeTwi.Out writeTwi = 50;
         readTwi.Out readTwi = 51;
         writeReadTwi.Out writeReadTwi = 52;
+
+        // =====================================================================
+        // Pose coding commands
+        getBCRemotes.Out getBCRemotes = 54;
+        getBCMaster.Out getBCMaster = 55;
+        getBCPoses.Out getBCPoses = 56;
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// Broadcasts
 
 enum Button {
     POWER = 0;
