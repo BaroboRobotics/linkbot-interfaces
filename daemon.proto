@@ -59,6 +59,15 @@ message addRobotRefs {
     }
 }
 
+message acquireRobotRef {
+    // Clients can "acquire" robot refs that have already been added via
+    // addRobotRefs.
+    message In {}
+    message Out {
+        optional SerialId serialId = 1;
+    }
+}
+
 message releaseRobotRefs {
     // Release references to a robot in the daemon's robot list. If the ref count for a robot is now
     // 0, the daemon disconnects from the robot.
@@ -137,6 +146,7 @@ message RpcRequest {
         releaseRobotRefs.In releaseRobotRefs = 5;
         transmit.In transmit = 6;
         transmitBroadcast.In transmitBroadcast = 7;
+        acquireRobotRef.In acquireRobotRef = 8;
     }
 }
 
@@ -150,6 +160,7 @@ message RpcReply {
         releaseRobotRefs.Out releaseRobotRefs = 5;
         transmit.Out transmit = 6;
         transmitBroadcast.Out transmitBroadcast = 7;
+        acquireRobotRef.Out acquireRobotRef = 8;
     }
 }
 
