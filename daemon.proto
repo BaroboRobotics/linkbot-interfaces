@@ -79,6 +79,22 @@ message releaseRobotRefs {
     }
 }
 
+message daemonCommand {
+    // Send a message to the daemon to modify something. Could be the daemon's
+    // firmware flashing paradigm, server port, whatever.
+    enum Command {
+        ENABLE_FIRMWARE_FLASHING = 0;
+        DISABLE_FIRMWARE_FLASHING = 1;
+    }
+
+    message In {
+        required Command command = 1;
+    }
+
+    message Out {
+    }
+}
+
 // TODO: Add reordering requests, e.g., slide(robots[x..y] to z) in the ordered list of robots.
 
 message transmit {
@@ -147,6 +163,7 @@ message RpcRequest {
         transmit.In transmit = 6;
         transmitBroadcast.In transmitBroadcast = 7;
         acquireRobotRef.In acquireRobotRef = 8;
+        daemonCommand.In daemonCommand = 9;
     }
 }
 
@@ -161,6 +178,7 @@ message RpcReply {
         transmit.Out transmit = 6;
         transmitBroadcast.Out transmitBroadcast = 7;
         acquireRobotRef.Out acquireRobotRef = 8;
+        daemonCommand.Out daemonCommand = 9;
     }
 }
 
