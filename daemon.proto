@@ -147,6 +147,21 @@ message transmitBroadcast {
     }
 }
 
+message setRobotManagerRobots {
+    // This message will be sent from the robot manager (probably in
+    // linkbotjs2) to the daemon to set the current contents and order of the
+    // robot manager.
+
+    message In {
+        repeated SerialId robots = 1;
+    }
+
+    message Out {
+        optional Status status = 1;
+    }
+
+}
+
 // TODO: GetDongleSerialId method
 
 // =============================================================================
@@ -164,6 +179,7 @@ message RpcRequest {
         transmitBroadcast.In transmitBroadcast = 7;
         acquireRobotRef.In acquireRobotRef = 8;
         daemonCommand.In daemonCommand = 9;
+        setRobotManagerRobots.In setRobotManagerRobots = 10;
     }
 }
 
@@ -179,6 +195,7 @@ message RpcReply {
         transmitBroadcast.Out transmitBroadcast = 7;
         acquireRobotRef.Out acquireRobotRef = 8;
         daemonCommand.Out daemonCommand = 9;
+        setRobotManagerRobots.Out setRobotManagerRobots = 10;
     }
 }
 
