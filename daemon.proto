@@ -162,6 +162,17 @@ message setRobotManagerRobots {
 
 }
 
+message getRobotManagerRobots {
+    // Get the current list of acquirable robots from the daemon
+
+    message In {
+    }
+
+    message Out {
+        repeated SerialId robots = 1;
+    }
+}
+
 // TODO: GetDongleSerialId method
 
 // =============================================================================
@@ -180,6 +191,7 @@ message RpcRequest {
         acquireRobotRef.In acquireRobotRef = 8;
         daemonCommand.In daemonCommand = 9;
         setRobotManagerRobots.In setRobotManagerRobots = 10;
+        getRobotManagerRobots.In getRobotManagerRobots = 11;
     }
 }
 
@@ -196,6 +208,7 @@ message RpcReply {
         acquireRobotRef.Out acquireRobotRef = 8;
         daemonCommand.Out daemonCommand = 9;
         setRobotManagerRobots.Out setRobotManagerRobots = 10;
+        getRobotManagerRobots.Out getRobotManagerRobots = 11;
     }
 }
 
