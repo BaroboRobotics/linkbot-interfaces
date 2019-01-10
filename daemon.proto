@@ -173,6 +173,17 @@ message getRobotManagerRobots {
     }
 }
 
+message getDongleFlashProgress {
+  // get firmware flashing progress
+
+  message In {
+  }
+
+  message Out {
+    optional uint32 progress = 1;
+  }
+}
+
 // TODO: GetDongleSerialId method
 
 // =============================================================================
@@ -192,6 +203,7 @@ message RpcRequest {
         daemonCommand.In daemonCommand = 9;
         setRobotManagerRobots.In setRobotManagerRobots = 10;
         getRobotManagerRobots.In getRobotManagerRobots = 11;
+        getDongleFlashProgress.In getDongleFlashProgress = 12;
     }
 }
 
@@ -209,6 +221,7 @@ message RpcReply {
         daemonCommand.Out daemonCommand = 9;
         setRobotManagerRobots.Out setRobotManagerRobots = 10;
         getRobotManagerRobots.Out getRobotManagerRobots = 11;
+        getDongleFlashProgress.Out getDongleFlashProgress = 12;
     }
 }
 
