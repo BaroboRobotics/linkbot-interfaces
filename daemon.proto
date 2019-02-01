@@ -230,8 +230,20 @@ message ReceiveTransmission {
     optional robot.RobotToClient payload = 2;
 }
 
+enum DongleStatus {
+    CONNECTED = 0;
+    NOT_FOUND = 1;
+    CANT_OPEN = 2;
+    CONNECTING = 3;
+    WRONG_VERSION = 4;
+    FLASHING = 5;
+    OTHERS = 6;
+}
+
 message DongleEvent {
-    optional string firmwareVersion = 1 [(nanopb).max_size = 128];
+    optional DongleStatus status = 1;
+    optional string firmwareVersion = 2 [(nanopb).max_size = 128];
+    optional uint32 flashProgress = 3;
 }
 
 message RobotEvent {
