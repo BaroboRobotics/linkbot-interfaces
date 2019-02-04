@@ -230,7 +230,7 @@ message ReceiveTransmission {
     optional robot.RobotToClient payload = 2;
 }
 
-enum DongleStatus {
+enum DongleState {
     CONNECTED = 0;
     NOT_FOUND = 1;
     CANT_OPEN = 2;
@@ -241,7 +241,7 @@ enum DongleStatus {
 }
 
 message DongleEvent {
-    optional DongleStatus status = 1;
+    optional DongleState state = 1;
     optional string firmwareVersion = 2 [(nanopb).max_size = 128];
     optional uint32 flashProgress = 3;
 }
