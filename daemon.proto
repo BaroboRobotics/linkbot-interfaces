@@ -246,13 +246,17 @@ message ReceiveTransmission {
 }
 
 enum DongleState {
-    CONNECTED = 0;
+    FOUND = 0;
     NOT_FOUND = 1;
-    CANT_OPEN = 2;
-    CONNECTING = 3;
-    WRONG_VERSION = 4;
-    FLASHING = 5;
-    OTHERS = 6;
+    OPEN = 2;
+    CANT_OPEN = 3;
+    CONNECTING = 4;
+    CONNECTED = 5;
+    CANT_CONNECT = 6;
+    WRONG_VERSION = 7;
+    FLASHING = 8;
+    DISCONNECTED = 9;
+    OTHERS = 10;
 }
 
 message DongleEvent {
