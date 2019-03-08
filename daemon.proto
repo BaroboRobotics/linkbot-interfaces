@@ -270,6 +270,17 @@ message RobotEvent {
     optional string firmwareVersion = 2 [(nanopb).max_size = 128];
 }
 
+
+message RobotManagerRobotsEvent {
+  repeated SerialId robots = 1;
+}
+
+message DaemonEvent {
+  oneof arg {
+    RobotManagerRobotsEvent robotManagerRobotsEvent = 1;
+  }
+}
+
 // =============================================================================
 // Top-level daemon interface messages
 
@@ -290,5 +301,6 @@ message DaemonToClient {
         ReceiveTransmission receive = 2;
         DongleEvent dongleEvent = 3;
         RobotEvent robotEvent = 4;
+        DaemonEvent daemonEvent = 5;
     }
 }
