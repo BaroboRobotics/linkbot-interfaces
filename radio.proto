@@ -31,6 +31,10 @@ message PowerOnEvent {
 
 }
 
+message PowerOffEvent {
+    // Radio broadcast from a robot to all daemons.
+}
+
 message RadioMessage {
     oneof arg {
         robot.ClientToRobot clientToRobot = 1;
@@ -42,6 +46,7 @@ message RadioMessage {
         ConnectSession connectSession = 5;
         DisconnectSession disconnectSession = 6;
         PowerOnEvent powerOnEvent = 7;
+	PowerOffEvent powerOffEvent = 8;
     }
 }
 
