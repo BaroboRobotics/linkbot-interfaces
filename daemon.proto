@@ -265,9 +265,15 @@ message DongleEvent {
     optional uint32 flashProgress = 3;
 }
 
+enum RobotState {
+  POWER_ON = 0;
+  POWER_OFF = 1;
+}
+
 message RobotEvent {
     optional SerialId serialId = 1;
     optional string firmwareVersion = 2 [(nanopb).max_size = 128];
+    optional RobotState state = 3;
 }
 
 
