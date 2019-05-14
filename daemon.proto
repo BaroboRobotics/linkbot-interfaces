@@ -85,6 +85,7 @@ message daemonCommand {
     enum Command {
         ENABLE_FIRMWARE_FLASHING = 0;
         DISABLE_FIRMWARE_FLASHING = 1;
+        FLASH_ARDUINO_SHIELD = 2;
     }
 
     message In {
