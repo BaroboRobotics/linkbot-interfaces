@@ -288,6 +288,18 @@ message DaemonEvent {
   }
 }
 
+enum ArduinoState {
+  FLASH = 0;
+  ERROR = 1;
+  OTHER = 2;
+}
+
+message ArduinoEvent {
+  optional ArduinoState state = 1;
+  optional string firmwareVersion = 2 [(nanopb).max_size = 128];
+  optional uint32 flashProgress = 3;
+}
+
 // =============================================================================
 // Top-level daemon interface messages
 
@@ -309,5 +321,6 @@ message DaemonToClient {
         DongleEvent dongleEvent = 3;
         RobotEvent robotEvent = 4;
         DaemonEvent daemonEvent = 5;
+        ArduinoEvent arduinoEvent = 6;
     }
 }
