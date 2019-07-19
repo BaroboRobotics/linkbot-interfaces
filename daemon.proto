@@ -79,6 +79,22 @@ message releaseRobotRefs {
     }
 }
 
+message getLinkbotFirmwareVersionString {
+    // get matching robot firmware version string
+    message In {}
+    message Out {
+        optional string value = 1 [(nanopb).max_size = 128];
+    }
+}
+
+message getArduinoFirmwareVersionString {
+    // get matching Arduino firmware version string
+    message In {}
+    message Out {
+        optional string value = 1 [(nanopb).max_size = 128];
+    }
+}
+
 message daemonCommand {
     // Send a message to the daemon to modify something. Could be the daemon's
     // firmware flashing paradigm, server port, whatever.
@@ -233,6 +249,8 @@ message RpcRequest {
         getDongleFlashProgress.In getDongleFlashProgress = 12;
         getDongleStatus.In getDongleStatus = 13;
         getArduinoStatus.In getArduinoStatus = 14;
+        getLinkbotFirmwareVersionString.In getLinkbotFirmwareVersionString = 15;
+        getArduinoFirmwareVersionString.In getArduinoFirmwareVersionString = 16;
     }
 }
 
@@ -253,6 +271,8 @@ message RpcReply {
         getDongleFlashProgress.Out getDongleFlashProgress = 12;
         getDongleStatus.Out getDongleStatus = 13;
         getArduinoStatus.Out getArduinoStatus = 14;
+        getLinkbotFirmwareVersionString.Out getLinkbotFirmwareVersionString = 15;
+        getArduinoFirmwareVersionString.Out getArduinoFirmwareVersionString = 16;
     }
 }
 
