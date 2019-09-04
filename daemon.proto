@@ -95,6 +95,14 @@ message getArduinoFirmwareVersionString {
     }
 }
 
+message getLinkbotLabsVersionString {
+    // get matching LinkbotLabs version string
+    message In {}
+    message Out {
+        optional string value = 1 [(nanopb).max_size = 128];
+    }
+}
+
 message daemonCommand {
     // Send a message to the daemon to modify something. Could be the daemon's
     // firmware flashing paradigm, server port, whatever.
@@ -251,6 +259,7 @@ message RpcRequest {
         getArduinoStatus.In getArduinoStatus = 14;
         getLinkbotFirmwareVersionString.In getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.In getArduinoFirmwareVersionString = 16;
+        getLinkbotLabsVersionString.In getLinkbotLabsVersionString = 17;
     }
 }
 
@@ -273,6 +282,7 @@ message RpcReply {
         getArduinoStatus.Out getArduinoStatus = 14;
         getLinkbotFirmwareVersionString.Out getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.Out getArduinoFirmwareVersionString = 16;
+        getLinkbotLabsVersionString.Out getLinkbotLabsVersionString = 17;
     }
 }
 
