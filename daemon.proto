@@ -103,6 +103,14 @@ message getLinkbotLabsVersionString {
     }
 }
 
+message launchChIDE {
+  // passing Ch program and launch it with ChIDE
+  message In {
+    optional string code = 1 [(nanopb).max_size = 1024];
+  }
+  message Out {}
+}
+
 message daemonCommand {
     // Send a message to the daemon to modify something. Could be the daemon's
     // firmware flashing paradigm, server port, whatever.
@@ -260,6 +268,7 @@ message RpcRequest {
         getLinkbotFirmwareVersionString.In getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.In getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.In getLinkbotLabsVersionString = 17;
+        launchChIDE.In launchChIDE = 18;
     }
 }
 
@@ -283,6 +292,7 @@ message RpcReply {
         getLinkbotFirmwareVersionString.Out getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.Out getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.Out getLinkbotLabsVersionString = 17;
+        launchChIDE.Out launchChIDE = 18;
     }
 }
 
