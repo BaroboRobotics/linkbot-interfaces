@@ -106,9 +106,13 @@ message getLinkbotLabsVersionString {
 message launchChIDE {
   // passing Ch program and launch it with ChIDE
   message In {
-    optional string code = 1 [(nanopb).max_size = 1024];
+    optional string code = 1 [(nanopb).max_size = 4096];
   }
-  message Out {}
+  message Out {
+    optional string errormsg = 1 [(nanopb).max_size = 256];
+    // FYI, the maximum path length is 260 characters on Windows
+    optional string filepath = 2 [(nanopb).max_size = 256];
+  }
 }
 
 message daemonCommand {
