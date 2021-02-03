@@ -103,10 +103,12 @@ message getLinkbotLabsVersionString {
     }
 }
 
-message launchChIDE {
-  // passing Ch program and launch it with ChIDE
+message manipulateChProgram {
+  // passing execute or launch Ch program with ChIDE or Ch Shell
   message In {
-    optional string code = 1 [(nanopb).max_size = 4096];
+    // action can be launch or execute
+    optional string action = 1 [(nanopb).max_size = 128];
+    optional string code = 2 [(nanopb).max_size = 4096];
   }
   message Out {
     optional string errormsg = 1 [(nanopb).max_size = 256];
@@ -272,7 +274,7 @@ message RpcRequest {
         getLinkbotFirmwareVersionString.In getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.In getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.In getLinkbotLabsVersionString = 17;
-        launchChIDE.In launchChIDE = 18;
+        manipulateChProgram.In manipulateChProgram = 18;
     }
 }
 
@@ -296,7 +298,7 @@ message RpcReply {
         getLinkbotFirmwareVersionString.Out getLinkbotFirmwareVersionString = 15;
         getArduinoFirmwareVersionString.Out getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.Out getLinkbotLabsVersionString = 17;
-        launchChIDE.Out launchChIDE = 18;
+        manipulateChProgram.Out manipulateChProgram = 18;
     }
 }
 
