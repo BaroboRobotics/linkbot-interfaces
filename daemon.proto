@@ -108,7 +108,7 @@ message manipulateChProgram {
   message In {
     // action can be launch or execute
     optional string action = 1 [(nanopb).max_size = 128];
-    optional string code = 2 [(nanopb).max_size = 4096];
+    optional string program = 2 [(nanopb).max_size = 4096];
   }
   message Out {
     optional string errormsg = 1 [(nanopb).max_size = 256];
