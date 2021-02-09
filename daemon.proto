@@ -117,6 +117,18 @@ message manipulateChProgram {
   }
 }
 
+message launchPartnerProgram {
+  message In {
+    // RoboSim, ChIDE, Ch, ChArduino, CLC, etc.
+    optional string program = 1 [(nanopb).max_size = 128];
+    // in JSON format
+    optional string options = 2 [(nanopb).max_size = 4096];
+  }
+  message Out {
+    optional string result = 1 [(nanopb).max_size = 256];
+  }
+}
+
 message daemonCommand {
     // Send a message to the daemon to modify something. Could be the daemon's
     // firmware flashing paradigm, server port, whatever.
@@ -275,6 +287,7 @@ message RpcRequest {
         getArduinoFirmwareVersionString.In getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.In getLinkbotLabsVersionString = 17;
         manipulateChProgram.In manipulateChProgram = 18;
+        launchPartnerProgram.In launchPartnerProgram = 19;
     }
 }
 
@@ -299,6 +312,7 @@ message RpcReply {
         getArduinoFirmwareVersionString.Out getArduinoFirmwareVersionString = 16;
         getLinkbotLabsVersionString.Out getLinkbotLabsVersionString = 17;
         manipulateChProgram.Out manipulateChProgram = 18;
+        launchPartnerProgram.Out launchPartnerProgram = 19;
     }
 }
 
